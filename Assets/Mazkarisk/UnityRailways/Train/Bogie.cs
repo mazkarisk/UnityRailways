@@ -10,10 +10,18 @@ public class Bogie : MonoBehaviour {
 	[SerializeField]
 	float targetVelocityInKph = 100f;
 
+	[SerializeField]
+	GameObject goJournalBoxFL;
+	[SerializeField]
+	GameObject goJournalBoxFR;
+	[SerializeField]
+	GameObject goJournalBoxRL;
+	[SerializeField]
+	GameObject goJournalBoxRR;
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
 		float wheelDiameter = 0.860f;
-		float distanceBetweenJournals = 1.640f;
 
 		GameObject goF = new GameObject();
 		goF.name = "—ÖŽ²F";
@@ -35,55 +43,11 @@ public class Bogie : MonoBehaviour {
 		wheelsetR.physicsMaterial = physicsMaterial;
 		wheelsetR.colliderMaterial = colliderMaterial;
 
-		GameObject goJournalBoxFL = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		goJournalBoxFL.name = "Ž²” FL";
-		goJournalBoxFL.transform.parent = transform;
-		goJournalBoxFL.transform.localPosition = new Vector3(-distanceBetweenJournals / 2f, wheelDiameter / 2f, 2.100f / 2f);
-		goJournalBoxFL.transform.localRotation = Quaternion.identity;
-		goJournalBoxFL.transform.localScale = new Vector3(0.200f, 0.200f, 0.200f);
-		goJournalBoxFL.GetComponent<BoxCollider>().material = physicsMaterial;
-		Rigidbody rigidbodyFL = goJournalBoxFL.AddComponent<Rigidbody>();
-		rigidbodyFL.mass = 125;
-
-		GameObject goJournalBoxFR = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		goJournalBoxFR.name = "Ž²” FR";
-		goJournalBoxFR.transform.parent = transform;
-		goJournalBoxFR.transform.localPosition = new Vector3(distanceBetweenJournals / 2f, wheelDiameter / 2f, 2.100f / 2f);
-		goJournalBoxFR.transform.localRotation = Quaternion.identity;
-		goJournalBoxFR.transform.localScale = new Vector3(0.200f, 0.200f, 0.200f);
-		goJournalBoxFR.GetComponent<BoxCollider>().material = physicsMaterial;
-		Rigidbody rigidbodyFR = goJournalBoxFR.AddComponent<Rigidbody>();
-		rigidbodyFR.mass = 125;
-
-		GameObject goJournalBoxRL = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		goJournalBoxRL.name = "Ž²” RL";
-		goJournalBoxRL.transform.parent = transform;
-		goJournalBoxRL.transform.localPosition = new Vector3(-distanceBetweenJournals / 2f, wheelDiameter / 2f, -2.100f / 2f);
-		goJournalBoxRL.transform.localRotation = Quaternion.identity;
-		goJournalBoxRL.transform.localScale = new Vector3(0.200f, 0.200f, 0.200f);
-		goJournalBoxRL.GetComponent<BoxCollider>().material = physicsMaterial;
-		Rigidbody rigidbodyRL = goJournalBoxRL.AddComponent<Rigidbody>();
-		rigidbodyRL.mass = 125;
-
-		GameObject goJournalBoxRR = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		goJournalBoxRR.name = "Ž²” RR";
-		goJournalBoxRR.transform.parent = transform;
-		goJournalBoxRR.transform.localPosition = new Vector3(distanceBetweenJournals / 2f, wheelDiameter / 2f, -2.100f / 2f);
-		goJournalBoxRR.transform.localRotation = Quaternion.identity;
-		goJournalBoxRR.transform.localScale = new Vector3(0.200f, 0.200f, 0.200f);
-		goJournalBoxRR.GetComponent<BoxCollider>().material = physicsMaterial;
-		Rigidbody rigidbodyRR = goJournalBoxRR.AddComponent<Rigidbody>();
-		rigidbodyRR.mass = 125;
-
 		JointWheelAndJournalBox(wheelsetF.getAxelL(), goJournalBoxFL, Vector3.zero, new Vector3(-(1.640f - 0.560f) / 2f, 0, 0));
 		JointWheelAndJournalBox(wheelsetF.getAxelR(), goJournalBoxFR, Vector3.zero, new Vector3((1.640f - 0.560f) / 2f, 0, 0));
 		JointWheelAndJournalBox(wheelsetR.getAxelL(), goJournalBoxRL, Vector3.zero, new Vector3(-(1.640f - 0.560f) / 2f, 0, 0));
 		JointWheelAndJournalBox(wheelsetR.getAxelR(), goJournalBoxRR, Vector3.zero, new Vector3((1.640f - 0.560f) / 2f, 0, 0));
 
-		JointJournalBoxAndBogie(goJournalBoxFL, gameObject, new Vector3(-1.640f / 2f, 0, 2.1f / 2f), Vector3.zero);
-		JointJournalBoxAndBogie(goJournalBoxFR, gameObject, new Vector3(1.640f / 2f, 0, 2.1f / 2f), Vector3.zero);
-		JointJournalBoxAndBogie(goJournalBoxRL, gameObject, new Vector3(-1.640f / 2f, 0, -2.1f / 2f), Vector3.zero);
-		JointJournalBoxAndBogie(goJournalBoxRR, gameObject, new Vector3(1.640f / 2f, 0, -2.1f / 2f), Vector3.zero);
 	}
 
 	// TODO
@@ -186,31 +150,5 @@ public class Bogie : MonoBehaviour {
 
 		return joint;
 	}
-	ConfigurableJoint JointJournalBoxAndBogie(GameObject journalBox, GameObject bogie, Vector3 anchor, Vector3 connectedAnchor) {
-		SoftJointLimitSpring spring = new SoftJointLimitSpring();
-		spring.spring = 5000000f;
-		spring.damper = 500000f;
-		SoftJointLimit limit = new SoftJointLimit();
-		limit.limit = 0.000001f;
 
-		ConfigurableJoint joint = bogie.AddComponent<ConfigurableJoint>();
-		joint.autoConfigureConnectedAnchor = false;
-		joint.connectedBody = journalBox.GetComponent<Rigidbody>();
-		joint.autoConfigureConnectedAnchor = true;   // TODO
-		joint.anchor = anchor;
-		joint.connectedAnchor = connectedAnchor;
-		joint.xMotion = ConfigurableJointMotion.Locked;   // TODO
-		joint.yMotion = ConfigurableJointMotion.Limited;   // TODO
-		joint.zMotion = ConfigurableJointMotion.Locked;   // TODO
-		joint.angularXMotion = ConfigurableJointMotion.Locked;// TODO
-		joint.angularYMotion = ConfigurableJointMotion.Locked;    // TODO
-		joint.angularZMotion = ConfigurableJointMotion.Locked;    // TODO
-		joint.linearLimit = limit;
-		joint.angularYLimit = limit;
-		joint.angularZLimit = limit;
-		joint.linearLimitSpring = spring;
-		joint.angularYZLimitSpring = spring;
-
-		return joint;
-	}
 }
