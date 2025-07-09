@@ -1,4 +1,4 @@
-using UnityEditor.Rendering;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RailConstructor : MonoBehaviour {
@@ -9,11 +9,9 @@ public class RailConstructor : MonoBehaviour {
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
-		int numDivision = 360 * 2;
+		int numDivision = 360 * 5;
 
 		float centerRadius = 300f;
-
-		numDivision = (int)(2 * Mathf.PI * centerRadius / 5f);
 
 		float cant = 0f;
 		float radius = centerRadius + (1.067f + 0.065f) * 0.5f;// - (Mathf.Sqrt(1.067f * 1.067f + cant * cant) - 1.067f);	// TODO ŒvŽZˆá‚¤
@@ -61,4 +59,25 @@ public class RailConstructor : MonoBehaviour {
 		return go;
 	}
 
+	TransitionCurve tc = new TransitionCurve(0, 1.0 / 11, 120);
+	private void OnDrawGizmos() {
+
+		for (int i = 0; i < tc.x.Count; i++) {
+			List<double> tempX = tc.x[i];
+			List<double> tempY = tc.y[i];
+
+			Gizmos.color = new Color(1, 0, 0, 1);
+			Vector3 from, to;
+
+			from = new Vector3((float)tc.x[i][0], (float)tc.y[i][0], i * 0.1f);
+			for (int j = 1; j < tc.x[i].Count; j++) {
+				if (tc.x[i].Count > 16 && j % (tc.x[i].Count / 16) > 0) {
+					continue;
+				}
+				to = new Vector3((float)tc.x[i][j], (float)tc.y[i][j], i * 0.1f);
+				Gizmos.DrawLine(from, to);
+				from = to;
+			}
+		}
+	}
 }
