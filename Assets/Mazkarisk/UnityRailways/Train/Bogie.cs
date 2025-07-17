@@ -19,27 +19,34 @@ public class Bogie : MonoBehaviour {
 	[SerializeField]
 	GameObject goJournalBoxRR;
 
+	[SerializeField]
+	GameObject wheelsetPrefab;
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
 		float wheelDiameter = 0.860f;
 
-		GameObject goF = new GameObject();
+		//GameObject goF = new GameObject();
+		GameObject goF = Instantiate(wheelsetPrefab);
 		goF.name = "—ÖŽ²F";
 		goF.transform.parent = transform;
 		goF.transform.localPosition = new Vector3(0f, wheelDiameter / 2f, 2.1f / 2f);
 		goF.transform.localRotation = Quaternion.identity;
 		goF.transform.localScale = Vector3.one;
-		Wheelset wheelsetF = goF.AddComponent<Wheelset>();
+		//Wheelset wheelsetF = goF.AddComponent<Wheelset>();
+		Wheelset wheelsetF = goF.GetComponent<Wheelset>();
 		wheelsetF.physicsMaterial = physicsMaterial;
 		wheelsetF.colliderMaterial = colliderMaterial;
 
-		GameObject goR = new GameObject();
+		//GameObject goR = new GameObject();
+		GameObject goR = Instantiate(wheelsetPrefab);
 		goR.name = "—ÖŽ²R";
 		goR.transform.parent = transform;
 		goR.transform.localPosition = new Vector3(0f, wheelDiameter / 2f, -2.1f / 2f);
 		goR.transform.localRotation = Quaternion.identity;
 		goR.transform.localScale = Vector3.one;
-		Wheelset wheelsetR = goR.AddComponent<Wheelset>();
+		//Wheelset wheelsetR = goR.AddComponent<Wheelset>();
+		Wheelset wheelsetR = goR.GetComponent<Wheelset>();
 		wheelsetR.physicsMaterial = physicsMaterial;
 		wheelsetR.colliderMaterial = colliderMaterial;
 
@@ -92,7 +99,7 @@ public class Bogie : MonoBehaviour {
 			hoge = 1 - hoge * hoge;
 		}
 
-		rigidbody.AddForce(transform.forward * 50f * hoge, ForceMode.Acceleration);
+		rigidbody.AddForce(transform.forward * 200f * hoge, ForceMode.Acceleration);
 
 	}
 
@@ -123,8 +130,8 @@ public class Bogie : MonoBehaviour {
 
 	ConfigurableJoint JointWheelAndJournalBox(GameObject wheel, GameObject journalBox, Vector3 anchor, Vector3 connectedAnchor) {
 		SoftJointLimitSpring spring = new SoftJointLimitSpring();
-		spring.spring = 100000000f;
-		spring.damper = 10000000f;
+		spring.spring = 1000000f;
+		spring.damper = 100000f;
 		SoftJointLimit limit = new SoftJointLimit();
 		limit.limit = 0.000001f;
 

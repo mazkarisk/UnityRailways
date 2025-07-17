@@ -85,11 +85,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   physicsMaterial: {fileID: 13400000, guid: 3bd4d287c5e123d4daf3ce21630c884c, type: 2}
   colliderMaterial: {fileID: 2100000, guid: b95f751c0f8c57141851e121a18880d5, type: 2}
-  targetVelocityInKph: 100
+  targetVelocityInKph: 240
   goJournalBoxFL: {fileID: 2414270824546237394}
   goJournalBoxFR: {fileID: 6314268375171727988}
   goJournalBoxRL: {fileID: 4871159830778538036}
   goJournalBoxRR: {fileID: 3528807065406533118}
+  wheelsetPrefab: {fileID: 1784463862255749128, guid: 48cbbf91bfb87fd4280a158563f2a086, type: 3}
 --- !u!1 &615800024287093627
 GameObject:
   m_ObjectHideFlags: 0
@@ -670,7 +671,7 @@ ConfigurableJoint:
   m_AngularZMotion: 0
   m_LinearLimitSpring:
     spring: 5000000
-    damper: 500000
+    damper: 5000000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -1081,7 +1082,7 @@ ConfigurableJoint:
   m_AngularZMotion: 0
   m_LinearLimitSpring:
     spring: 5000000
-    damper: 500000
+    damper: 5000000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -1352,7 +1353,7 @@ ConfigurableJoint:
   m_AngularZMotion: 0
   m_LinearLimitSpring:
     spring: 5000000
-    damper: 500000
+    damper: 5000000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -1630,7 +1631,7 @@ ConfigurableJoint:
     contactDistance: 0
   m_AngularXLimitSpring:
     spring: 10000
-    damper: 100000
+    damper: 100000000
   m_LowAngularXLimit:
     limit: -0.001
     bounciness: 0
@@ -1926,7 +1927,7 @@ ConfigurableJoint:
   m_AngularZMotion: 0
   m_LinearLimitSpring:
     spring: 5000000
-    damper: 500000
+    damper: 5000000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0

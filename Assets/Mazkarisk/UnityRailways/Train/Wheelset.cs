@@ -5,8 +5,8 @@ public class Wheelset : MonoBehaviour {
 	public PhysicsMaterial physicsMaterial { get; set; } = null;
 	public Material colliderMaterial { get; set; } = null;
 
-	const int treadDivisions = 60;
-	const int flangeDivisions = 60;
+	const int treadDivisions = 80;
+	const int flangeDivisions = 80;
 
 	const float colliderExtension = 0.01f; //TODO
 
@@ -18,7 +18,7 @@ public class Wheelset : MonoBehaviour {
 
 	float treadBevel = 0.005f;
 	float treadSlope = 1f / 10f; // TODO
-	float flangeHeight = 0.030f;
+	float flangeHeight = 0.040f; // TODO
 	float flangeRadius = 0.010f;
 	float flangeInsideAngle = 82;
 	float flangeOutsideAngle = 65;
@@ -50,9 +50,9 @@ public class Wheelset : MonoBehaviour {
 
 	private GameObject goWheelL = null;
 	private GameObject goWheelR = null;
-	private GameObject goAxelL = null;
-	private GameObject goAxelC = null;
-	private GameObject goAxelR = null;
+	[SerializeField] private GameObject goAxelL = null;
+	[SerializeField] private GameObject goAxelC = null;
+	[SerializeField] private GameObject goAxelR = null;
 
 	public GameObject getWheelL() {
 		if (goWheelL == null) {
@@ -98,11 +98,11 @@ public class Wheelset : MonoBehaviour {
 	void Initialize() {
 		CalculatePoints();
 
-		//Mesh[] treadColliderMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, false), CreateCylinderMesh(treadColliderPoints[1], treadDivisions, false), CreateCylinderMesh(treadColliderPoints[2], treadDivisions, false) };
-		Mesh[] treadColliderMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, false) };
+		Mesh[] treadColliderMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, false), CreateCylinderMesh(treadColliderPoints[1], treadDivisions, false), CreateCylinderMesh(treadColliderPoints[2], treadDivisions, false) };
+		//Mesh[] treadColliderMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, false) };
 		Mesh[] flangeColliderMesh = new Mesh[] { CreateCylinderMesh(flangeColliderPoints[0], flangeDivisions, false) };
-		//Mesh[] treadRendererMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, true), CreateCylinderMesh(treadColliderPoints[1], treadDivisions, true), CreateCylinderMesh(treadColliderPoints[2], treadDivisions, true) };
-		Mesh[] treadRendererMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, true) };
+		Mesh[] treadRendererMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, true), CreateCylinderMesh(treadColliderPoints[1], treadDivisions, true), CreateCylinderMesh(treadColliderPoints[2], treadDivisions, true) };
+		//Mesh[] treadRendererMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, true) };
 		Mesh[] flangeRendererMesh = new Mesh[] { CreateCylinderMesh(flangeColliderPoints[0], flangeDivisions, true) };
 
 		if (goWheelL == null) {
@@ -116,22 +116,12 @@ public class Wheelset : MonoBehaviour {
 			goWheelR.transform.localPosition = new Vector3(backGauge / 2f + treadReferencePosition, 0f, 0f);
 			goWheelR.transform.localEulerAngles = new Vector3(360f / (treadDivisions * 2f), 180f, 0f);
 		}
+;
+		JointWheelAndAxel(goWheelL, goAxelL, Vector3.left * (wheelThickness - treadReferencePosition), Vector3.right * 0.2f);
+		JointWheelAndAxel(goWheelL, goAxelC, Vector3.right * treadReferencePosition, Vector3.left * 0.495f);
+		JointWheelAndAxel(goWheelR, goAxelC, Vector3.right * treadReferencePosition, Vector3.right * 0.495f);
+		JointWheelAndAxel(goWheelR, goAxelR, Vector3.left * (wheelThickness - treadReferencePosition), Vector3.left * 0.2f);
 
-		if (goAxelL == null) {
-			float length = 0.4f;
-			goAxelL = CreateAxelObject("AxelL", transform, Vector3.left * (backGauge * 0.5f + wheelThickness + length * 0.5f), Quaternion.identity, new Vector3(length, 0.1f, 0.1f), physicsMaterial, colliderMaterial);
-			JointWheelAndAxel(goWheelL, goAxelL, Vector3.left * (wheelThickness - treadReferencePosition), Vector3.right * 0.5f);
-		}
-		if (goAxelC == null) {
-			goAxelC = CreateAxelObject("AxelC", transform, Vector3.zero, Quaternion.identity, new Vector3(backGauge, 0.1f, 0.1f), physicsMaterial, colliderMaterial);
-			JointWheelAndAxel(goWheelL, goAxelC, Vector3.right * treadReferencePosition, Vector3.left * 0.5f);
-			JointWheelAndAxel(goWheelR, goAxelC, Vector3.right * treadReferencePosition, Vector3.right * 0.5f);
-		}
-		if (goAxelR == null) {
-			float length = 0.4f;
-			goAxelR = CreateAxelObject("AxelR", transform, Vector3.right * (backGauge * 0.5f + wheelThickness + length * 0.5f), Quaternion.identity, new Vector3(length, 0.1f, 0.1f), physicsMaterial, colliderMaterial);
-			JointWheelAndAxel(goWheelR, goAxelR, Vector3.left * (wheelThickness - treadReferencePosition), Vector3.left * 0.5f);
-		}
 	}
 
 	private void CalculatePoints() {
@@ -181,7 +171,7 @@ public class Wheelset : MonoBehaviour {
 			new Vector2[] {
 				point4+(point4 - point2).normalized  * colliderExtension + Vector2.up * wheelRadius,
 				point2 + Vector2.up * wheelRadius
-			}/*,
+			},
 			new Vector2[] {
 				((Vector2.zero + point4) / 2 + point4 + point5) / 3 + Vector2.up * wheelRadius,
 				(Vector2.zero + point4) / 2 + Vector2.up * wheelRadius
@@ -189,7 +179,7 @@ public class Wheelset : MonoBehaviour {
 			new Vector2[] {
 				point5 + Vector2.up * wheelRadius,
 				((Vector2.zero + point4) / 2 + point4 + point5) / 3 + Vector2.up * wheelRadius
-			}*/
+			}/**/
 		};
 		flangeColliderPoints = new Vector2[][] {
 			/*
@@ -252,30 +242,10 @@ public class Wheelset : MonoBehaviour {
 	}
 
 	// TODO ドキュメント整備
-	private static GameObject CreateAxelObject(string name, Transform parent, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, PhysicsMaterial physicsMaterial, Material colliderMaterial) {
-		GameObject axelObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		axelObject.name = name;
-		axelObject.transform.parent = parent;
-		axelObject.transform.localPosition = localPosition;
-		axelObject.transform.localRotation = localRotation;
-		axelObject.transform.localScale = localScale;
-		//axelObject.GetComponent<MeshRenderer>().enabled = false;
-		axelObject.GetComponent<BoxCollider>().material = physicsMaterial;
-
-		MeshRenderer axelRenderer = axelObject.GetComponent<MeshRenderer>();
-		axelRenderer.sharedMaterial = colliderMaterial;
-
-		Rigidbody axelRigidbody = axelObject.AddComponent<Rigidbody>();
-		axelRigidbody.mass = 200;
-
-		return axelObject;
-	}
-
-	// TODO ドキュメント整備
 	ConfigurableJoint JointWheelAndAxel(GameObject wheelObject, GameObject axelObject, Vector3 anchor, Vector3 connectedAnchor) {
 		SoftJointLimitSpring spring = new SoftJointLimitSpring();
-		spring.spring = 1000000f;
-		spring.damper = 1000000f;
+		spring.spring = 100000000f;
+		spring.damper = 100000000f;
 		SoftJointLimit limit = new SoftJointLimit();
 		limit.limit = 0.000001f;
 
