@@ -11,9 +11,9 @@ public class RailConstructor : MonoBehaviour {
 	void Start() {
 		int numDivision = 360 * 5;
 
-		float centerRadius = 300f;
+		float centerRadius = 1000f;
 
-		float cant = 0f;
+		float cant = 0.1f;
 		float radius = centerRadius + (1.067f + 0.065f) * 0.5f;// - (Mathf.Sqrt(1.067f * 1.067f + cant * cant) - 1.067f);	// TODO ŒvŽZˆá‚¤
 		for (int i = 0; i < numDivision; i++) {
 			float x1 = Mathf.Cos(2f * Mathf.PI * ((float)i / (float)numDivision)) * radius + centerRadius;
@@ -59,6 +59,7 @@ public class RailConstructor : MonoBehaviour {
 		return go;
 	}
 
+	/*
 	TransitionCurve tc = new TransitionCurve(0, 1.0 / 11, 120);
 	private void OnDrawGizmos() {
 
@@ -80,4 +81,5 @@ public class RailConstructor : MonoBehaviour {
 			}
 		}
 	}
+	*/
 }
