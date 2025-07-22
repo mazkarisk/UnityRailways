@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProcedualMesh
-{
+public class ProcedualMesh {
 	/// <summary>
 	/// 板部材の端部のメッシュの作成
 	/// </summary>
@@ -15,7 +14,7 @@ public class ProcedualMesh
 	public static Mesh PlateEnd(float thickness, float height, float length, float endRound, float sideRound) {
 		Mesh mesh = new Mesh();
 
-		float angle = Mathf.PI / 6;
+		float angle = Mathf.PI / 4;
 		float x0 = -thickness / 2;
 		float x1 = -thickness / 2 + sideRound;
 		float x2 = thickness / 2 - sideRound;
@@ -124,16 +123,9 @@ public class ProcedualMesh
 		}
 
 		// インデックスバッファの作成
-		List<int> indicesTemp = new List<int> {
-			0, 4, 5, 5, 1, 0, 1, 5, 6, 6, 2, 1, 2, 6, 7, 7, 3, 2,
-			4, 8, 9, 9, 5, 4, 5, 9, 10, 10, 6, 5, 6, 10, 11, 11, 7, 6,
-			8, 12, 13, 13, 9, 8, 9, 13, 14, 14, 10, 9, 10, 14, 15, 15, 11, 10
-		};
 		List<int> indices = new List<int>();
 		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < indicesTemp.Count; j++) {
-				indices.Add(indicesTemp[j] + i * 16);
-			}
+			indices.AddRange(GetGridIndices(3, 3, i * 16));
 		}
 
 		// メッシュの作成
@@ -145,5 +137,33 @@ public class ProcedualMesh
 		mesh.RecalculateTangents();
 
 		return mesh;
+	}
+
+	/// <summary>
+	/// 格子状に整列したメッシュのインデックスバッファを作成する。
+	/// </summary>
+	/// <param name="gridSizeX">格子の横サイズ(四角形の数)</param>
+	/// <param name="gridSizeY">格子の縦サイズ(四角形の数)</param>
+	/// <param name="offset">インデックスのオフセット</param>
+	/// <returns></returns>
+	private static List<int> GetGridIndices(int gridSizeX, int gridSizeY, int offset) {
+		List<int> indices = new List<int>();
+
+		for (int y = 0; y < gridSizeY; y++) {
+			for (int x = 0; x < gridSizeX; x++) {
+				int offsetOfThisGrid = y * (gridSizeX + 1) + x + offset;
+				List<int> indicesTemp = new List<int> {
+					offsetOfThisGrid + 0                  ,
+					offsetOfThisGrid + 0 + (gridSizeX + 1),
+					offsetOfThisGrid + 1 + (gridSizeX + 1),
+					offsetOfThisGrid + 1 + (gridSizeX + 1),
+					offsetOfThisGrid + 1                  ,
+					offsetOfThisGrid + 0
+				};
+				indices.AddRange(indicesTemp);
+			}
+		}
+
+		return indices;
 	}
 }
