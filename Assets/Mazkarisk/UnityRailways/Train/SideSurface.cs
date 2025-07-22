@@ -64,8 +64,22 @@ public class SideSurface : MonoBehaviour {
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
-		mesh = ProcedualMesh.PlateEnd(plateThickness, rearApertureBottomHeight, rearApertureLength, plateEndRound, plateSideRound);
-		GetComponent<MeshFilter>().mesh = mesh;
+		Mesh rearBottomMesh = ProcedualMesh.PlateEnd(plateThickness, rearApertureBottomHeight, rearApertureLength, plateEndRound, plateSideRound);
+		transform.Find("RearBottomPart").GetComponent<MeshFilter>().mesh = rearBottomMesh;
+		transform.Find("RearBottomPart").SetLocalPositionAndRotation(new Vector3(0, 0, rearApertureLength), Quaternion.Euler(0, 180, 0));
+
+		Mesh rearTopMesh = ProcedualMesh.PlateEnd(plateThickness, rearApertureTopHeight, rearApertureLength, plateEndRound, plateSideRound);
+		transform.Find("RearTopPart").GetComponent<MeshFilter>().mesh = rearTopMesh;
+		transform.Find("RearTopPart").SetLocalPositionAndRotation(new Vector3(0, overallHeight - rearApertureTopHeight, rearApertureLength), Quaternion.Euler(0, 180, 0));
+
+		Mesh frontBottomMesh = ProcedualMesh.PlateEnd(plateThickness, frontApertureBottomHeight, frontApertureLength, plateEndRound, plateSideRound);
+		transform.Find("FrontBottomPart").GetComponent<MeshFilter>().mesh = frontBottomMesh;
+		transform.Find("FrontBottomPart").SetLocalPositionAndRotation(new Vector3(0, 0, overallLength - frontApertureLength), Quaternion.identity);
+
+		Mesh frontTopMesh = ProcedualMesh.PlateEnd(plateThickness, frontApertureTopHeight, frontApertureLength, plateEndRound, plateSideRound);
+		transform.Find("FrontTopPart").GetComponent<MeshFilter>().mesh = frontTopMesh;
+		transform.Find("FrontTopPart").SetLocalPositionAndRotation(new Vector3(0, overallHeight - rearApertureTopHeight, overallLength - frontApertureLength), Quaternion.identity);
+
 	}
 
 	// Update is called once per frame
