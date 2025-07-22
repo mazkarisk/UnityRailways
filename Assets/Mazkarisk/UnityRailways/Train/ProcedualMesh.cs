@@ -60,28 +60,12 @@ public class ProcedualMesh {
 			uvs.Add(new Vector2(vertices[k].x, vertices[k].y));
 		}
 
-		// 頂点の法線バッファの作成と位置の調整
-		List<Vector3> normals = new List<Vector3>();
+		// 頂点の法線バッファの作成
+		List<Vector3> normals = Get3x3GridNormals(vertices);
+
+		// 頂点の位置の調整
 		for (int i = 0; i < vertices.Count; i++) {
 			Vector3 vertex = vertices[i];
-			Vector3 normal = Vector3.zero;
-			if (vertex.x == x0) {
-				normal.x = -1;
-			} else if (vertex.x == x3) {
-				normal.x = 1;
-			}
-			if (vertex.y == y0) {
-				normal.y = -1;
-			} else if (vertex.y == y3) {
-				normal.y = 1;
-			}
-			if (vertex.z == z0) {
-				normal.z = -1;
-			} else if (vertex.z == z3) {
-				normal.z = 1;
-			}
-			normals.Add(normal.normalized);
-
 			if (vertex.z == z0) {
 				vertices[i] = new Vector3(vertex.x * Mathf.Cos(angle), vertex.y, vertex.z);
 			}
@@ -147,6 +131,55 @@ public class ProcedualMesh {
 			new Vector3(x3, y3, z3), new Vector3(x2, y3, z3), new Vector3(x1, y3, z3), new Vector3(x0, y3, z3)
 		};
 		return vertices;
+	}
+
+	/// <summary>
+	/// 3×3の格子状に整列したメッシュで構成された直方体の法線バッファを作成する。
+	/// </summary>
+	/// <returns>作成した頂点バッファ</returns>
+	private static List<Vector3> Get3x3GridNormals(List<Vector3> vertices) {
+
+		// 各座標の最小値・最大値の算出
+		float x0 = float.PositiveInfinity;
+		float x3 = float.NegativeInfinity;
+		float y0 = float.PositiveInfinity;
+		float y3 = float.NegativeInfinity;
+		float z0 = float.PositiveInfinity;
+		float z3 = float.NegativeInfinity;
+		for (int i = 0; i < vertices.Count; i++) {
+			Vector3 vertex = vertices[i];
+			if (vertex.x < x0) x0 = vertex.x;
+			if (vertex.x > x3) x3 = vertex.x;
+			if (vertex.y < y0) y0 = vertex.y;
+			if (vertex.y > y3) y3 = vertex.y;
+			if (vertex.z < z0) z0 = vertex.z;
+			if (vertex.z > z3) z3 = vertex.z;
+		}
+
+		// 各座標の最小値・最大値と一致するか判定して法線を作成
+		List<Vector3> normals = new List<Vector3>();
+		for (int i = 0; i < vertices.Count; i++) {
+			Vector3 vertex = vertices[i];
+			Vector3 normal = Vector3.zero;
+			if (vertex.x == x0) {
+				normal.x = -1;
+			} else if (vertex.x == x3) {
+				normal.x = 1;
+			}
+			if (vertex.y == y0) {
+				normal.y = -1;
+			} else if (vertex.y == y3) {
+				normal.y = 1;
+			}
+			if (vertex.z == z0) {
+				normal.z = -1;
+			} else if (vertex.z == z3) {
+				normal.z = 1;
+			}
+			normals.Add(normal.normalized);
+		}
+
+		return normals;
 	}
 
 	/// <summary>
