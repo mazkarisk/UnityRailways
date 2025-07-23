@@ -18,7 +18,7 @@ public class Wheelset : MonoBehaviour {
 
 	float treadBevel = 0.005f;
 	float treadSlope = 1f / 10f; // TODO
-	float flangeHeight = 0.040f; // TODO
+	float flangeHeight = 0.045f; // TODO
 	float flangeRadius = 0.010f;
 	float flangeInsideAngle = 82;
 	float flangeOutsideAngle = 65;
@@ -237,6 +237,8 @@ public class Wheelset : MonoBehaviour {
 		rigidbody.mass = 200; // TODO
 		rigidbody.linearDamping = 0f;
 		rigidbody.angularDamping = 0f;  // TODO Ç¢ÇÈÅH
+
+		wheelObject.AddComponent<WorldDamper>();
 
 		return wheelObject;
 	}
