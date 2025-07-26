@@ -48,6 +48,11 @@ public class SideSurface : MonoBehaviour {
 	/// </summary>
 	[SerializeField, Tooltip("後方の開口部の上部から上の高さ(m単位)")]
 	float rearApertureTopHeight = 0.75f;
+	/// <summary>
+	/// 後方の開口部の角の丸み(m単位)
+	/// </summary>
+	[SerializeField, Tooltip("後方の開口部の角の丸み(m単位)"), Range(0.000001f, 1f)]
+	float rearApertureRound = 0.1f;
 
 	/// <summary>
 	/// 前方の開口部の前後方向の長さ(m単位)
@@ -64,13 +69,20 @@ public class SideSurface : MonoBehaviour {
 	/// </summary>
 	[SerializeField, Tooltip("前方の開口部の上部から上の高さ(m単位)")]
 	float frontApertureTopHeight = 0.75f;
+	/// <summary>
+	/// 前方の開口部の角の丸み(m単位)
+	/// </summary>
+	[SerializeField, Tooltip("前方の開口部の角の丸み(m単位)"), Range(0.000001f, 1f)]
+	float frontApertureRound = 0.1f;
 
 	private bool refreshMeshesRequired = true;
-	private Mesh rearBottomMesh = null;
 	private Mesh rearTopMesh = null;
+	private Mesh rearBottomMesh = null;
+	private Mesh midTopMesh = null;
 	private Mesh midMesh = null;
-	private Mesh frontBottomMesh = null;
+	private Mesh midBottomMesh = null;
 	private Mesh frontTopMesh = null;
+	private Mesh frontBottomMesh = null;
 
 	void Start() {
 		RefreshMeshes();
@@ -90,25 +102,33 @@ public class SideSurface : MonoBehaviour {
 	}
 
 	private void RefreshMeshes() {
-		rearBottomMesh = NegativeZEndMesh(plateThickness, rearApertureBottomHeight, rearApertureLength, plateEndRound, plateSideRound);
+		rearBottomMesh = NegativeZEndMesh(plateThickness, rearApertureBottomHeight, rearApertureLength - rearApertureRound, plateEndRound, plateSideRound);
 		transform.Find("RearBottomPart").GetComponent<MeshFilter>().mesh = rearBottomMesh;
-		transform.Find("RearBottomPart").SetLocalPositionAndRotation(new Vector3(0, 0, rearApertureLength), Quaternion.identity);
+		transform.Find("RearBottomPart").localPosition = new Vector3(0, 0, rearApertureLength - rearApertureRound);
 
-		rearTopMesh = NegativeZEndMesh(plateThickness, rearApertureTopHeight, rearApertureLength, plateEndRound, plateSideRound);
+		rearTopMesh = NegativeZEndMesh(plateThickness, rearApertureTopHeight, rearApertureLength - rearApertureRound, plateEndRound, plateSideRound);
 		transform.Find("RearTopPart").GetComponent<MeshFilter>().mesh = rearTopMesh;
-		transform.Find("RearTopPart").SetLocalPositionAndRotation(new Vector3(0, overallHeight - rearApertureTopHeight, rearApertureLength), Quaternion.identity);
+		transform.Find("RearTopPart").localPosition = new Vector3(0, overallHeight - rearApertureTopHeight, rearApertureLength - rearApertureRound);
 
-		frontBottomMesh = PositiveZEndMesh(plateThickness, frontApertureBottomHeight, frontApertureLength, plateEndRound, plateSideRound);
-		transform.Find("FrontBottomPart").GetComponent<MeshFilter>().mesh = frontBottomMesh;
-		transform.Find("FrontBottomPart").SetLocalPositionAndRotation(new Vector3(0, 0, overallLength - frontApertureLength), Quaternion.identity);
-
-		frontTopMesh = PositiveZEndMesh(plateThickness, frontApertureTopHeight, frontApertureLength, plateEndRound, plateSideRound);
-		transform.Find("FrontTopPart").GetComponent<MeshFilter>().mesh = frontTopMesh;
-		transform.Find("FrontTopPart").SetLocalPositionAndRotation(new Vector3(0, overallHeight - rearApertureTopHeight, overallLength - frontApertureLength), Quaternion.identity);
+		midTopMesh = InversedTMesh();
+		transform.Find("MidTopPart").GetComponent<MeshFilter>().mesh = midTopMesh;
+		//transform.Find("MidTopPart").localPosition = new Vector3(0, rearApertureBottomHeight + rearApertureRound, rearApertureLength);
 
 		midMesh = PillarMesh();
 		transform.Find("MidPart").GetComponent<MeshFilter>().mesh = midMesh;
-		transform.Find("MidPart").SetLocalPositionAndRotation(new Vector3(0, rearApertureBottomHeight, rearApertureLength), Quaternion.identity);
+		transform.Find("MidPart").localPosition = new Vector3(0, rearApertureBottomHeight + rearApertureRound, rearApertureLength);
+
+		midBottomMesh = TMesh();
+		transform.Find("MidBottomPart").GetComponent<MeshFilter>().mesh = midBottomMesh;
+		//transform.Find("MidBottomPart").localPosition = new Vector3(0, rearApertureBottomHeight + rearApertureRound, rearApertureLength);
+
+		frontBottomMesh = PositiveZEndMesh(plateThickness, frontApertureBottomHeight, frontApertureLength - frontApertureRound, plateEndRound, plateSideRound);
+		transform.Find("FrontBottomPart").GetComponent<MeshFilter>().mesh = frontBottomMesh;
+		transform.Find("FrontBottomPart").localPosition = new Vector3(0, 0, overallLength - frontApertureLength + frontApertureRound);
+
+		frontTopMesh = PositiveZEndMesh(plateThickness, frontApertureTopHeight, frontApertureLength - frontApertureRound, plateEndRound, plateSideRound); ;
+		transform.Find("FrontTopPart").GetComponent<MeshFilter>().mesh = frontTopMesh;
+		transform.Find("FrontTopPart").localPosition = new Vector3(0, overallHeight - frontApertureTopHeight, overallLength - frontApertureLength + frontApertureRound);
 	}
 
 	/// <summary>
@@ -229,7 +249,7 @@ public class SideSurface : MonoBehaviour {
 	/// 板部材の柱部のメッシュの作成
 	/// </summary>
 	/// <returns></returns>
-	public Mesh PillarMesh() {
+	private Mesh PillarMesh() {
 		Mesh mesh = new Mesh();
 
 		float angle = Mathf.PI / 4;
@@ -239,8 +259,8 @@ public class SideSurface : MonoBehaviour {
 		float x3 = plateThickness / 2;
 		float y0 = -plateThickness / 2 * Mathf.Sin(angle);
 		float y1 = 0;
-		float y2 = overallHeight - rearApertureBottomHeight - rearApertureTopHeight;
-		float y3 = overallHeight - rearApertureBottomHeight - rearApertureTopHeight + plateThickness / 2 * Mathf.Sin(angle);
+		float y2 = overallHeight - rearApertureBottomHeight - rearApertureTopHeight - rearApertureRound * 2;
+		float y3 = overallHeight - rearApertureBottomHeight - rearApertureTopHeight - rearApertureRound * 2 + plateThickness / 2 * Mathf.Sin(angle);
 		float z0 = 0;
 		float z1 = plateSideRound;
 		float z2 = overallLength - rearApertureLength - frontApertureLength - plateSideRound;
@@ -273,6 +293,30 @@ public class SideSurface : MonoBehaviour {
 		mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 		mesh.RecalculateBounds();
 		mesh.RecalculateTangents();
+
+		return mesh;
+	}
+
+	/// <summary>
+	/// 板部材の"T"字部のメッシュの作成
+	/// </summary>
+	/// <returns></returns>
+	private Mesh TMesh() {
+		Mesh mesh = new Mesh();
+
+		// TODO
+
+		return mesh;
+	}
+
+	/// <summary>
+	/// 板部材の"凸"字部のメッシュの作成
+	/// </summary>
+	/// <returns></returns>
+	private Mesh InversedTMesh() {
+		Mesh mesh = new Mesh();
+
+		// TODO
 
 		return mesh;
 	}
