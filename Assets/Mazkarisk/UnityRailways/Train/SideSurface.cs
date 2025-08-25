@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,73 +6,73 @@ using UnityEngine.UIElements;
 public class SideSurface : MonoBehaviour {
 
 	/// <summary>
-	/// ”ÂŒú(m’PˆÊ)
+	/// æ¿åš(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("”ÂŒú(m’PˆÊ)"), Range(0.001f, 0.1f)]
+	[SerializeField, Tooltip("æ¿åš(må˜ä½)"), Range(0.001f, 0.1f)]
 	float plateThickness = 0.004f;
 
 	/// <summary>
-	/// ’[–Ê(”Â“¯m‚ÌÚ‡•”)‚ÌR‰ÁH”¼Œa(m’PˆÊ)
+	/// ç«¯é¢(æ¿åŒå£«ã®æ¥åˆéƒ¨)ã®RåŠ å·¥åŠå¾„(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("’[–Ê(”Â“¯m‚ÌÚ‡•”)‚ÌR‰ÁH”¼Œa(m’PˆÊ)"), Range(0.0001f, 0.1f)]
+	[SerializeField, Tooltip("ç«¯é¢(æ¿åŒå£«ã®æ¥åˆéƒ¨)ã®RåŠ å·¥åŠå¾„(må˜ä½)"), Range(0.0001f, 0.1f)]
 	float plateEndRound = 0.0005f;
 	/// <summary>
-	/// ‘¤–Ê(”Â“¯m‚ÌÚ‡•”ˆÈŠO)‚ÌR‰ÁH”¼Œa(m’PˆÊ)
+	/// å´é¢(æ¿åŒå£«ã®æ¥åˆéƒ¨ä»¥å¤–)ã®RåŠ å·¥åŠå¾„(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("‘¤–Ê(”Â“¯m‚ÌÚ‡•”ˆÈŠO)‚ÌR‰ÁH”¼Œa(m’PˆÊ)"), Range(0.0001f, 0.1f)]
+	[SerializeField, Tooltip("å´é¢(æ¿åŒå£«ã®æ¥åˆéƒ¨ä»¥å¤–)ã®RåŠ å·¥åŠå¾„(må˜ä½)"), Range(0.0001f, 0.1f)]
 	float plateSideRound = 0.001f;
 
 	/// <summary>
-	/// ‘S‘Ì‚Ìã‰º•ûŒü‚‚³(m’PˆÊ)
+	/// å…¨ä½“ã®ä¸Šä¸‹æ–¹å‘é«˜ã•(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("‘S‘Ì‚Ìã‰º•ûŒü‚‚³(m’PˆÊ)")]
+	[SerializeField, Tooltip("å…¨ä½“ã®ä¸Šä¸‹æ–¹å‘é«˜ã•(må˜ä½)")]
 	float overallHeight = 2.9f;
 	/// <summary>
-	/// ‘S‘Ì‚Ì‘OŒã•ûŒü’·‚³(m’PˆÊ)
+	/// å…¨ä½“ã®å‰å¾Œæ–¹å‘é•·ã•(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("‘S‘Ì‚Ì‘OŒã•ûŒü’·‚³(m’PˆÊ)")]
+	[SerializeField, Tooltip("å…¨ä½“ã®å‰å¾Œæ–¹å‘é•·ã•(må˜ä½)")]
 	float overallLength = 2f;
 
 	/// <summary>
-	/// Œã•û‚ÌŠJŒû•”‚Ì‘OŒã•ûŒü‚Ì’·‚³(m’PˆÊ)
+	/// å¾Œæ–¹ã®é–‹å£éƒ¨ã®å‰å¾Œæ–¹å‘ã®é•·ã•(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("Œã•û‚ÌŠJŒû•”‚Ì‘OŒã•ûŒü‚Ì’·‚³(m’PˆÊ)")]
+	[SerializeField, Tooltip("å¾Œæ–¹ã®é–‹å£éƒ¨ã®å‰å¾Œæ–¹å‘ã®é•·ã•(må˜ä½)")]
 	float rearApertureLength = 0.75f;
 	/// <summary>
-	/// Œã•û‚ÌŠJŒû•”‚Ì‰º•”‚©‚ç‰º‚Ì‚‚³(m’PˆÊ)
+	/// å¾Œæ–¹ã®é–‹å£éƒ¨ã®ä¸‹éƒ¨ã‹ã‚‰ä¸‹ã®é«˜ã•(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("Œã•û‚ÌŠJŒû•”‚Ì‰º•”‚©‚ç‰º‚Ì‚‚³(m’PˆÊ)")]
+	[SerializeField, Tooltip("å¾Œæ–¹ã®é–‹å£éƒ¨ã®ä¸‹éƒ¨ã‹ã‚‰ä¸‹ã®é«˜ã•(må˜ä½)")]
 	float rearApertureBottomHeight = 0.75f;
 	/// <summary>
-	/// Œã•û‚ÌŠJŒû•”‚Ìã•”‚©‚çã‚Ì‚‚³(m’PˆÊ)
+	/// å¾Œæ–¹ã®é–‹å£éƒ¨ã®ä¸Šéƒ¨ã‹ã‚‰ä¸Šã®é«˜ã•(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("Œã•û‚ÌŠJŒû•”‚Ìã•”‚©‚çã‚Ì‚‚³(m’PˆÊ)")]
+	[SerializeField, Tooltip("å¾Œæ–¹ã®é–‹å£éƒ¨ã®ä¸Šéƒ¨ã‹ã‚‰ä¸Šã®é«˜ã•(må˜ä½)")]
 	float rearApertureTopHeight = 0.75f;
 	/// <summary>
-	/// Œã•û‚ÌŠJŒû•”‚ÌŠp‚ÌŠÛ‚İ(m’PˆÊ)
+	/// å¾Œæ–¹ã®é–‹å£éƒ¨ã®è§’ã®ä¸¸ã¿(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("Œã•û‚ÌŠJŒû•”‚ÌŠp‚ÌŠÛ‚İ(m’PˆÊ)"), Range(0.000001f, 1f)]
+	[SerializeField, Tooltip("å¾Œæ–¹ã®é–‹å£éƒ¨ã®è§’ã®ä¸¸ã¿(må˜ä½)"), Range(0.0001f, 1f)]
 	float rearApertureRound = 0.1f;
 
 	/// <summary>
-	/// ‘O•û‚ÌŠJŒû•”‚Ì‘OŒã•ûŒü‚Ì’·‚³(m’PˆÊ)
+	/// å‰æ–¹ã®é–‹å£éƒ¨ã®å‰å¾Œæ–¹å‘ã®é•·ã•(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("‘O•û‚ÌŠJŒû•”‚Ì‘OŒã•ûŒü‚Ì’·‚³(m’PˆÊ)")]
+	[SerializeField, Tooltip("å‰æ–¹ã®é–‹å£éƒ¨ã®å‰å¾Œæ–¹å‘ã®é•·ã•(må˜ä½)")]
 	float frontApertureLength = 0.75f;
 	/// <summary>
-	/// ‘O•û‚ÌŠJŒû•”‚Ì‰º•”‚©‚ç‰º‚Ì‚‚³(m’PˆÊ)
+	/// å‰æ–¹ã®é–‹å£éƒ¨ã®ä¸‹éƒ¨ã‹ã‚‰ä¸‹ã®é«˜ã•(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("‘O•û‚ÌŠJŒû•”‚Ì‰º•”‚©‚ç‰º‚Ì‚‚³(m’PˆÊ)")]
+	[SerializeField, Tooltip("å‰æ–¹ã®é–‹å£éƒ¨ã®ä¸‹éƒ¨ã‹ã‚‰ä¸‹ã®é«˜ã•(må˜ä½)")]
 	float frontApertureBottomHeight = 0.75f;
 	/// <summary>
-	/// ‘O•û‚ÌŠJŒû•”‚Ìã•”‚©‚çã‚Ì‚‚³(m’PˆÊ)
+	/// å‰æ–¹ã®é–‹å£éƒ¨ã®ä¸Šéƒ¨ã‹ã‚‰ä¸Šã®é«˜ã•(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("‘O•û‚ÌŠJŒû•”‚Ìã•”‚©‚çã‚Ì‚‚³(m’PˆÊ)")]
+	[SerializeField, Tooltip("å‰æ–¹ã®é–‹å£éƒ¨ã®ä¸Šéƒ¨ã‹ã‚‰ä¸Šã®é«˜ã•(må˜ä½)")]
 	float frontApertureTopHeight = 0.75f;
 	/// <summary>
-	/// ‘O•û‚ÌŠJŒû•”‚ÌŠp‚ÌŠÛ‚İ(m’PˆÊ)
+	/// å‰æ–¹ã®é–‹å£éƒ¨ã®è§’ã®ä¸¸ã¿(må˜ä½)
 	/// </summary>
-	[SerializeField, Tooltip("‘O•û‚ÌŠJŒû•”‚ÌŠp‚ÌŠÛ‚İ(m’PˆÊ)"), Range(0.000001f, 1f)]
+	[SerializeField, Tooltip("å‰æ–¹ã®é–‹å£éƒ¨ã®è§’ã®ä¸¸ã¿(må˜ä½)"), Range(0.0001f, 1f)]
 	float frontApertureRound = 0.1f;
 
 	private bool refreshMeshesRequired = true;
@@ -94,7 +94,7 @@ public class SideSurface : MonoBehaviour {
 	}
 
 	void Update() {
-		// •K—v‚É‰‚¶‚ÄƒƒbƒVƒ…‚ğ‰Šú‰»‚·‚é
+		// å¿…è¦ã«å¿œã˜ã¦ãƒ¡ãƒƒã‚·ãƒ¥ã‚’åˆæœŸåŒ–ã™ã‚‹
 		if (refreshMeshesRequired) {
 			RefreshMeshes();
 			refreshMeshesRequired = false;
@@ -102,6 +102,7 @@ public class SideSurface : MonoBehaviour {
 	}
 
 	private void RefreshMeshes() {
+		// å¾Œæ–¹ã®ãƒ¡ãƒƒã‚·ãƒ¥
 		rearBottomMesh = NegativeZEndMesh(plateThickness, rearApertureBottomHeight, rearApertureLength - rearApertureRound, plateEndRound, plateSideRound);
 		transform.Find("RearBottomPart").GetComponent<MeshFilter>().mesh = rearBottomMesh;
 		transform.Find("RearBottomPart").localPosition = new Vector3(0, 0, rearApertureLength - rearApertureRound);
@@ -110,18 +111,38 @@ public class SideSurface : MonoBehaviour {
 		transform.Find("RearTopPart").GetComponent<MeshFilter>().mesh = rearTopMesh;
 		transform.Find("RearTopPart").localPosition = new Vector3(0, overallHeight - rearApertureTopHeight, rearApertureLength - rearApertureRound);
 
-		midTopMesh = InversedTMesh();
+		// ä¸­å¤®éƒ¨ã®ãƒ¡ãƒƒã‚·ãƒ¥
+		midTopMesh = ProcedualMesh.InversedTMesh(
+			plateThickness,
+			overallLength - rearApertureLength - frontApertureLength + rearApertureRound + frontApertureRound,
+			Mathf.Max(rearApertureTopHeight + rearApertureRound, frontApertureTopHeight + frontApertureRound),
+			rearApertureRound,
+			rearApertureRound + Mathf.Max(rearApertureTopHeight - frontApertureTopHeight, 0),
+			frontApertureRound,
+			frontApertureRound + Mathf.Max(frontApertureTopHeight - rearApertureTopHeight, 0)
+			); ;
 		transform.Find("MidTopPart").GetComponent<MeshFilter>().mesh = midTopMesh;
-		//transform.Find("MidTopPart").localPosition = new Vector3(0, rearApertureBottomHeight + rearApertureRound, rearApertureLength);
+		transform.Find("MidTopPart").localPosition = new Vector3(0, overallHeight, rearApertureLength + rearApertureRound + (overallLength - rearApertureLength - rearApertureRound - frontApertureLength - frontApertureRound) / 2);
+		transform.Find("MidTopPart").localRotation = Quaternion.Euler(180, 90, 0);
 
 		midMesh = PillarMesh();
 		transform.Find("MidPart").GetComponent<MeshFilter>().mesh = midMesh;
-		transform.Find("MidPart").localPosition = new Vector3(0, rearApertureBottomHeight + rearApertureRound, rearApertureLength);
+		transform.Find("MidPart").localPosition = new Vector3(0, 0, rearApertureLength);
 
-		midBottomMesh = TMesh();
+		midBottomMesh = ProcedualMesh.InversedTMesh(
+			plateThickness,
+			overallLength - rearApertureLength - frontApertureLength + rearApertureRound + frontApertureRound,
+			Mathf.Max(rearApertureBottomHeight + rearApertureRound, frontApertureBottomHeight + frontApertureRound),
+			rearApertureRound,
+			rearApertureRound + Mathf.Max(rearApertureBottomHeight - frontApertureBottomHeight, 0),
+			frontApertureRound,
+			frontApertureRound + Mathf.Max(frontApertureBottomHeight - rearApertureBottomHeight, 0)
+			);
 		transform.Find("MidBottomPart").GetComponent<MeshFilter>().mesh = midBottomMesh;
-		//transform.Find("MidBottomPart").localPosition = new Vector3(0, rearApertureBottomHeight + rearApertureRound, rearApertureLength);
+		transform.Find("MidBottomPart").localPosition = new Vector3(0, 0, rearApertureLength + rearApertureRound + (overallLength - rearApertureLength - rearApertureRound - frontApertureLength - frontApertureRound) / 2);
+		transform.Find("MidBottomPart").localRotation = Quaternion.Euler(0, 90, 0);
 
+		// å‰æ–¹ã®ãƒ¡ãƒƒã‚·ãƒ¥
 		frontBottomMesh = PositiveZEndMesh(plateThickness, frontApertureBottomHeight, frontApertureLength - frontApertureRound, plateEndRound, plateSideRound);
 		transform.Find("FrontBottomPart").GetComponent<MeshFilter>().mesh = frontBottomMesh;
 		transform.Find("FrontBottomPart").localPosition = new Vector3(0, 0, overallLength - frontApertureLength + frontApertureRound);
@@ -132,18 +153,16 @@ public class SideSurface : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// ”Â•”Ş‚Ì-Z•ûŒü‚Ì’[•”‚ÌƒƒbƒVƒ…‚Ìì¬
+	/// æ¿éƒ¨æã®-Zæ–¹å‘ã®ç«¯éƒ¨ã®ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
 	/// </summary>
-	/// <param name="thickness">”ÂŒú(m’PˆÊ)</param>
-	/// <param name="height">‚‚³(m’PˆÊ)</param>
-	/// <param name="length">’·‚³(m’PˆÊ)</param>
-	/// <param name="endRound">’[–Ê‚ÌR‰ÁH•(m’PˆÊ)</param>
-	/// <param name="sideRound">’[–ÊˆÈŠO‚ÌR‰ÁH•(m’PˆÊ)</param>
+	/// <param name="thickness">æ¿åš(må˜ä½)</param>
+	/// <param name="height">é«˜ã•(må˜ä½)</param>
+	/// <param name="length">é•·ã•(må˜ä½)</param>
+	/// <param name="endRound">ç«¯é¢ã®RåŠ å·¥å¹…(må˜ä½)</param>
+	/// <param name="sideRound">ç«¯é¢ä»¥å¤–ã®RåŠ å·¥å¹…(må˜ä½)</param>
 	/// <returns></returns>
 	public static Mesh NegativeZEndMesh(float thickness, float height, float length, float endRound, float sideRound) {
-		Mesh mesh = new Mesh();
-
-		float angle = Mathf.PI / 4;
+		float angle = Mathf.PI / 6;
 		float x0 = -thickness / 2;
 		float x1 = -(thickness / 2 - sideRound);
 		float x2 = thickness / 2 - sideRound;
@@ -157,19 +176,19 @@ public class SideSurface : MonoBehaviour {
 		float z2 = 0;
 		float z3 = thickness / 2 * Mathf.Sin(angle);
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìì¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<Vector3> vertices = ProcedualMesh.Get3x3GridVertices(x0, x1, x2, x3, y0, y1, y2, y3, z0, z1, z2, z3);
 
-		// –@üƒoƒbƒtƒ@‚Ìì¬
+		// æ³•ç·šãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<Vector3> normals = ProcedualMesh.Get3x3GridNormals(vertices);
 
-		// UVƒoƒbƒtƒ@‚Ìì¬
+		// UVãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<Vector2> uvs = ProcedualMesh.Get3x3GridUVs(vertices, Vector3.zero);
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<int> indices = ProcedualMesh.Get3x3GridIndices();
 
-		// ’¸“_‚ÌˆÊ’u‚Ì’²®
+		// é ‚ç‚¹ã®ä½ç½®ã®èª¿æ•´
 		for (int i = 0; i < vertices.Count; i++) {
 			Vector3 vertex = vertices[i];
 			if (vertex.z == z3) {
@@ -177,7 +196,8 @@ public class SideSurface : MonoBehaviour {
 			}
 		}
 
-		// ƒƒbƒVƒ…‚Ìì¬
+		// ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
+		Mesh mesh = new Mesh();
 		mesh.SetVertices(vertices);
 		mesh.SetNormals(normals);
 		mesh.SetUVs(0, uvs);
@@ -189,18 +209,16 @@ public class SideSurface : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// ”Â•”Ş‚Ì+Z•ûŒü‚Ì’[•”‚ÌƒƒbƒVƒ…‚Ìì¬
+	/// æ¿éƒ¨æã®+Zæ–¹å‘ã®ç«¯éƒ¨ã®ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
 	/// </summary>
-	/// <param name="thickness">”ÂŒú(m’PˆÊ)</param>
-	/// <param name="height">‚‚³(m’PˆÊ)</param>
-	/// <param name="length">’·‚³(m’PˆÊ)</param>
-	/// <param name="endRound">’[–Ê‚ÌR‰ÁH•(m’PˆÊ)</param>
-	/// <param name="sideRound">’[–ÊˆÈŠO‚ÌR‰ÁH•(m’PˆÊ)</param>
+	/// <param name="thickness">æ¿åš(må˜ä½)</param>
+	/// <param name="height">é«˜ã•(må˜ä½)</param>
+	/// <param name="length">é•·ã•(må˜ä½)</param>
+	/// <param name="endRound">ç«¯é¢ã®RåŠ å·¥å¹…(må˜ä½)</param>
+	/// <param name="sideRound">ç«¯é¢ä»¥å¤–ã®RåŠ å·¥å¹…(må˜ä½)</param>
 	/// <returns></returns>
 	public static Mesh PositiveZEndMesh(float thickness, float height, float length, float endRound, float sideRound) {
-		Mesh mesh = new Mesh();
-
-		float angle = Mathf.PI / 4;
+		float angle = Mathf.PI / 6;
 		float x0 = -thickness / 2;
 		float x1 = -(thickness / 2 - sideRound);
 		float x2 = thickness / 2 - sideRound;
@@ -214,19 +232,19 @@ public class SideSurface : MonoBehaviour {
 		float z2 = length - endRound;
 		float z3 = length;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìì¬
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<Vector3> vertices = ProcedualMesh.Get3x3GridVertices(x0, x1, x2, x3, y0, y1, y2, y3, z0, z1, z2, z3);
 
-		// –@üƒoƒbƒtƒ@‚Ìì¬
+		// æ³•ç·šãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<Vector3> normals = ProcedualMesh.Get3x3GridNormals(vertices);
 
-		// UVƒoƒbƒtƒ@‚Ìì¬
+		// UVãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<Vector2> uvs = ProcedualMesh.Get3x3GridUVs(vertices, Vector3.zero);
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<int> indices = ProcedualMesh.Get3x3GridIndices();
 
-		// ’¸“_‚ÌˆÊ’u‚Ì’²®
+		// é ‚ç‚¹ã®ä½ç½®ã®èª¿æ•´
 		for (int i = 0; i < vertices.Count; i++) {
 			Vector3 vertex = vertices[i];
 			if (vertex.z == z0) {
@@ -234,7 +252,8 @@ public class SideSurface : MonoBehaviour {
 			}
 		}
 
-		// ƒƒbƒVƒ…‚Ìì¬
+		// ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
+		Mesh mesh = new Mesh();
 		mesh.SetVertices(vertices);
 		mesh.SetNormals(normals);
 		mesh.SetUVs(0, uvs);
@@ -246,13 +265,13 @@ public class SideSurface : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// ”Â•”Ş‚Ì’Œ•”‚ÌƒƒbƒVƒ…‚Ìì¬
+	/// æ¿éƒ¨æã®æŸ±éƒ¨ã®ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
 	/// </summary>
 	/// <returns></returns>
 	private Mesh PillarMesh() {
-		Mesh mesh = new Mesh();
+		float angle = Mathf.PI / 6;
+		float pillarLength = overallLength - rearApertureLength - frontApertureLength;
 
-		float angle = Mathf.PI / 4;
 		float x0 = -plateThickness / 2;
 		float x1 = -(plateThickness / 2 - plateSideRound);
 		float x2 = plateThickness / 2 - plateSideRound;
@@ -266,57 +285,111 @@ public class SideSurface : MonoBehaviour {
 		float z2 = overallLength - rearApertureLength - frontApertureLength - plateSideRound;
 		float z3 = overallLength - rearApertureLength - frontApertureLength;
 
-		// ’¸“_ƒoƒbƒtƒ@‚Ìì¬
-		List<Vector3> vertices = ProcedualMesh.Get3x3GridVertices(x0, x1, x2, x3, y0, y1, y2, y3, z0, z1, z2, z3);
+		// float y10 = rearApertureBottomHeight + rearApertureRound;
+		// float y13 = frontApertureBottomHeight + frontApertureRound;
+		// float y20 = overallHeight - rearApertureTopHeight - rearApertureRound;
+		// float y23 = overallHeight - frontApertureTopHeight - frontApertureRound;
+		float y10 = Mathf.Max(rearApertureBottomHeight + rearApertureRound, frontApertureBottomHeight + frontApertureRound);
+		float y13 = y10;
+		float y20 = Mathf.Min(overallHeight - rearApertureTopHeight - rearApertureRound, overallHeight - frontApertureTopHeight - frontApertureRound);
+		float y23 = y20;
+		float y00 = y10 - plateThickness / 2 * Mathf.Sin(angle);
+		float y03 = y13 - plateThickness / 2 * Mathf.Sin(angle);
+		float y30 = y20 + plateThickness / 2 * Mathf.Sin(angle);
+		float y33 = y23 + plateThickness / 2 * Mathf.Sin(angle);
 
-		// –@üƒoƒbƒtƒ@‚Ìì¬
+		float y01 = Mathf.Lerp(y00, y03, z1 / pillarLength);
+		float y02 = Mathf.Lerp(y00, y03, z2 / pillarLength);
+		float y11 = Mathf.Lerp(y10, y13, z1 / pillarLength);
+		float y12 = Mathf.Lerp(y10, y13, z2 / pillarLength);
+		float y21 = Mathf.Lerp(y20, y23, z1 / pillarLength);
+		float y22 = Mathf.Lerp(y20, y23, z2 / pillarLength);
+		float y31 = Mathf.Lerp(y30, y33, z1 / pillarLength);
+		float y32 = Mathf.Lerp(y30, y33, z2 / pillarLength);
+
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
+		List<Vector3> vertices = new List<Vector3> {
+			// -Xé¢
+			new Vector3(x0, y03, z3), new Vector3(x0, y02, z2), new Vector3(x0, y01, z1), new Vector3(x0, y00, z0),
+			new Vector3(x0, y13, z3), new Vector3(x0, y12, z2), new Vector3(x0, y11, z1), new Vector3(x0, y10, z0),
+			new Vector3(x0, y23, z3), new Vector3(x0, y22, z2), new Vector3(x0, y21, z1), new Vector3(x0, y20, z0),
+			new Vector3(x0, y33, z3), new Vector3(x0, y32, z2), new Vector3(x0, y31, z1), new Vector3(x0, y30, z0),
+
+			// +Xé¢
+			new Vector3(x3, y00, z0), new Vector3(x3, y01, z1), new Vector3(x3, y02, z2), new Vector3(x3, y03, z3),
+			new Vector3(x3, y10, z0), new Vector3(x3, y11, z1), new Vector3(x3, y12, z2), new Vector3(x3, y13, z3),
+			new Vector3(x3, y20, z0), new Vector3(x3, y21, z1), new Vector3(x3, y22, z2), new Vector3(x3, y23, z3),
+			new Vector3(x3, y30, z0), new Vector3(x3, y31, z1), new Vector3(x3, y32, z2), new Vector3(x3, y33, z3),
+
+			// -Yé¢
+			new Vector3(x3, y00, z0), new Vector3(x2, y00, z0), new Vector3(x1, y00, z0), new Vector3(x0, y00, z0),
+			new Vector3(x3, y01, z1), new Vector3(x2, y01, z1), new Vector3(x1, y01, z1), new Vector3(x0, y01, z1),
+			new Vector3(x3, y02, z2), new Vector3(x2, y02, z2), new Vector3(x1, y02, z2), new Vector3(x0, y02, z2),
+			new Vector3(x3, y03, z3), new Vector3(x2, y03, z3), new Vector3(x1, y03, z3), new Vector3(x0, y03, z3),
+
+			// +Yé¢
+			new Vector3(x0, y30, z0), new Vector3(x1, y30, z0), new Vector3(x2, y30, z0), new Vector3(x3, y30, z0),
+			new Vector3(x0, y31, z1), new Vector3(x1, y31, z1), new Vector3(x2, y31, z1), new Vector3(x3, y31, z1),
+			new Vector3(x0, y32, z2), new Vector3(x1, y32, z2), new Vector3(x2, y32, z2), new Vector3(x3, y32, z2),
+			new Vector3(x0, y33, z3), new Vector3(x1, y33, z3), new Vector3(x2, y33, z3), new Vector3(x3, y33, z3),
+
+			// -Zé¢
+			new Vector3(x0, y00, z0), new Vector3(x1, y00, z0), new Vector3(x2, y00, z0), new Vector3(x3, y00, z0),
+			new Vector3(x0, y10, z0), new Vector3(x1, y10, z0), new Vector3(x2, y10, z0), new Vector3(x3, y10, z0),
+			new Vector3(x0, y20, z0), new Vector3(x1, y20, z0), new Vector3(x2, y20, z0), new Vector3(x3, y20, z0),
+			new Vector3(x0, y30, z0), new Vector3(x1, y30, z0), new Vector3(x2, y30, z0), new Vector3(x3, y30, z0),
+
+			// +Zé¢
+			new Vector3(x3, y03, z3), new Vector3(x2, y03, z3), new Vector3(x1, y03, z3), new Vector3(x0, y03, z3),
+			new Vector3(x3, y13, z3), new Vector3(x2, y13, z3), new Vector3(x1, y13, z3), new Vector3(x0, y13, z3),
+			new Vector3(x3, y23, z3), new Vector3(x2, y23, z3), new Vector3(x1, y23, z3), new Vector3(x0, y23, z3),
+			new Vector3(x3, y33, z3), new Vector3(x2, y33, z3), new Vector3(x1, y33, z3), new Vector3(x0, y33, z3)
+		};
+
+		// æ³•ç·šãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<Vector3> normals = ProcedualMesh.Get3x3GridNormals(vertices);
 
-		// UVƒoƒbƒtƒ@‚Ìì¬
+		// UVãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<Vector2> uvs = ProcedualMesh.Get3x3GridUVs(vertices, Vector3.zero);
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 		List<int> indices = ProcedualMesh.Get3x3GridIndices();
 
-		// ’¸“_‚ÌˆÊ’u‚Ì’²®
-		for (int i = 0; i < vertices.Count; i++) {
-			Vector3 vertex = vertices[i];
-			if (vertex.y == y0 || vertex.y == y3) {
-				vertices[i] = new Vector3(vertex.x * Mathf.Cos(angle), vertex.y, vertex.z);
-			}
+		// é ‚ç‚¹ã®ä½ç½®ã®èª¿æ•´
+		int[] modifyTarget = new int[] {
+			0, 1, 2, 3,
+			12, 13, 14, 15,
+			16, 17, 18, 19,
+			28, 29, 30, 31,
+
+			32, 33, 34, 35,
+			36, 37, 38, 39,
+			40, 41, 42, 43,
+			44, 45, 46, 47,
+
+			48, 49, 50, 51,
+			52, 53, 54, 55,
+			56, 57, 58, 59,
+			60, 61, 62, 63,
+
+			64, 65, 66, 67,
+			76, 77, 78, 79,
+			80, 81, 82, 83,
+			92, 93, 94, 95
+		};
+		for (int i = 0; i < modifyTarget.Length; i++) {
+			Vector3 vertex = vertices[modifyTarget[i]];
+			vertices[modifyTarget[i]] = new Vector3(vertex.x * Mathf.Cos(angle), vertex.y, vertex.z);
 		}
 
-		// ƒƒbƒVƒ…‚Ìì¬
+		// ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
+		Mesh mesh = new Mesh();
 		mesh.SetVertices(vertices);
 		mesh.SetNormals(normals);
 		mesh.SetUVs(0, uvs);
 		mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 		mesh.RecalculateBounds();
 		mesh.RecalculateTangents();
-
-		return mesh;
-	}
-
-	/// <summary>
-	/// ”Â•”Ş‚Ì"T"š•”‚ÌƒƒbƒVƒ…‚Ìì¬
-	/// </summary>
-	/// <returns></returns>
-	private Mesh TMesh() {
-		Mesh mesh = new Mesh();
-
-		// TODO
-
-		return mesh;
-	}
-
-	/// <summary>
-	/// ”Â•”Ş‚Ì"“Ê"š•”‚ÌƒƒbƒVƒ…‚Ìì¬
-	/// </summary>
-	/// <returns></returns>
-	private Mesh InversedTMesh() {
-		Mesh mesh = new Mesh();
-
-		// TODO
 
 		return mesh;
 	}
