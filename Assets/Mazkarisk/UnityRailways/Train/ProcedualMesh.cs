@@ -1,86 +1,134 @@
+ï»¿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProcedualMesh {
 
 	/// <summary>
-	/// ”Â•”Ş‚Ì’[•”‚ÌƒƒbƒVƒ…‚Ìì¬
+	/// æ¿éƒ¨æã®"å‡¸"å­—éƒ¨ã®ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
 	/// </summary>
-	/// <param name="thickness">”ÂŒú(m’PˆÊ)</param>
-	/// <param name="height">‚‚³(m’PˆÊ)</param>
-	/// <param name="length">’·‚³(m’PˆÊ)</param>
-	/// <param name="endRound">’[–Ê‚ÌR‰ÁH•(m’PˆÊ)</param>
-	/// <param name="sideRound">’[–ÊˆÈŠO‚ÌR‰ÁH•(m’PˆÊ)</param>
+	/// <remarks>
+	/// ä»¥ä¸‹ã®å›³ã®ã‚ˆã†ãªãƒ¡ãƒƒã‚·ãƒ¥ã‚’ä½œæˆã™ã‚‹ã€‚åŸç‚¹ã¯Topéƒ¨ä¸Šé¢ã®ä¸­å¿ƒã‹ã‚‰å‚ç›´ã«ä¸‹ã—ãŸç·šã¨åº•é¢ãŒäº¤å·®ã™ã‚‹å ´æ‰€ã§ã‚ã‚Šã€å¿…ãšã—ã‚‚åº•é¢ã®ä¸­å¿ƒã§ã¯ãªã„ã€‚
+	/// <code>
+	/// ã€€ã€€â”â”â”“ã€€ã€€ã€€ã€€ã€€<br/>
+	/// ã€€ã€€â”ƒï¼´â”ƒã€€+Y +Z ã€€<br/>
+	/// â”â”â”›ã€€â”ƒã€€â†‘â†— ã€€ã€€<br/>
+	/// â”ƒã€€â”‚ï¼¼â”ƒã€€â””â†’+Xã€€<br/>
+	/// â”ƒï¼¬â”‚ã€€â”—â”â”“ã€€ã€€ã€€<br/>
+	/// â”ƒã€€â”‚ã€€â”‚ï¼²â”ƒã€€ã€€ã€€<br/>
+	/// â”—â”â”â”¿â”â”â”›ã€€ã€€ã€€<br/>
+	/// ã€€ã€€ã€€â†‘åŸç‚¹
+	/// </code>
+	/// </remarks>
 	/// <returns></returns>
-	public static Mesh PlateEnd(float thickness, float height, float length, float endRound, float sideRound) {
+	public static Mesh InversedTMesh(float thickness, float overallWidth, float overallHeight, float leftNotchWidth, float leftNotchHeight, float rightNotchWidth, float rightNotchHeight) {
+		float zn = -thickness / 2;
+		float zp = thickness / 2;
+
+		float x0 = -(leftNotchWidth + (overallWidth - leftNotchWidth - rightNotchWidth) / 2);
+		float x1 = -(overallWidth - leftNotchWidth - rightNotchWidth) / 2;
+		float x2 = (overallWidth - leftNotchWidth - rightNotchWidth) / 2;
+		float x3 = (rightNotchWidth + (overallWidth - leftNotchWidth - rightNotchWidth) / 2);
+
+		float yLeftTop = overallHeight - leftNotchHeight;
+		float yRightTop = overallHeight - rightNotchHeight;
+
+		List<Vector3> vertices = new List<Vector3> {
+			// -Xé¢(Leftéƒ¨)
+			new Vector3(x0, yLeftTop, zp), new Vector3(x0, yLeftTop, zn), new Vector3(x0, 0, zp), new Vector3(x0, 0, zn),
+			// -Xé¢(Topéƒ¨)
+			new Vector3(x1, overallHeight, zp), new Vector3(x1, overallHeight, zn), new Vector3(x1, yLeftTop, zp), new Vector3(x1, yLeftTop, zn),
+			
+			// +Xé¢(Topéƒ¨)
+			new Vector3(x2, overallHeight, zn), new Vector3(x2, overallHeight, zp), new Vector3(x2, yRightTop, zn), new Vector3(x2, yRightTop, zp),
+			// +Xé¢(Rightéƒ¨)
+			new Vector3(x3, yRightTop, zn), new Vector3(x3, yRightTop, zp), new Vector3(x3, 0, zn), new Vector3(x3, 0, zp),
+			
+			// -Yé¢
+			new Vector3(x3, 0, zn), new Vector3(x3, 0, zp),
+			new Vector3(x2, 0, zn), new Vector3(x2, 0, zp),
+			new Vector3(x1, 0, zn), new Vector3(x1, 0, zp),
+			new Vector3(x0, 0, zn), new Vector3(x0, 0, zp),
+			
+			// +Yé¢(Leftéƒ¨)
+			new Vector3(x0, yLeftTop, zn), new Vector3(x0, yLeftTop, zp),
+			new Vector3(x1, yLeftTop, zn), new Vector3(x1, yLeftTop, zp), 
+			// +Yé¢(Topéƒ¨)
+			new Vector3(x1, overallHeight, zn), new Vector3(x1, overallHeight, zp),
+			new Vector3(x2, overallHeight, zn), new Vector3(x2, overallHeight, zp),
+			// +Yé¢(Rightéƒ¨)
+			new Vector3(x2, yRightTop, zn), new Vector3(x2, yRightTop, zp),
+			new Vector3(x3, yRightTop, zn), new Vector3(x3, yRightTop, zp), 
+			
+			// -Zé¢
+			new Vector3(x1, overallHeight, zn), new Vector3(x2, overallHeight, zn),
+			new Vector3(x0, yLeftTop, zn), new Vector3(x1, yLeftTop, zn), new Vector3(x2, yRightTop, zn), new Vector3(x3, yRightTop, zn),
+			new Vector3(x0, 0, zn), new Vector3(x1, 0, zn), new Vector3(x2, 0, zn), new Vector3(x3, 0, zn),
+			
+			// +Zé¢
+			new Vector3(x2, overallHeight, zp), new Vector3(x1, overallHeight, zp),
+			new Vector3(x3, yRightTop, zp), new Vector3(x2, yRightTop, zp), new Vector3(x1, yLeftTop, zp), new Vector3(x0, yLeftTop, zp),
+			new Vector3(x3, 0, zp), new Vector3(x2, 0, zp), new Vector3(x1, 0, zp), new Vector3(x0, 0, zp)
+		};
+
+		List<Vector3> normals = new List<Vector3> {
+			// -Xé¢
+			Vector3.left, Vector3.left, Vector3.left, Vector3.left,
+			Vector3.left, Vector3.left, Vector3.left, Vector3.left,
+			// +Xé¢
+			Vector3.right, Vector3.right, Vector3.right, Vector3.right,
+			Vector3.right, Vector3.right, Vector3.right, Vector3.right,
+			// -Yé¢
+			Vector3.down, Vector3.down, Vector3.down, Vector3.down,
+			Vector3.down, Vector3.down, Vector3.down, Vector3.down,
+			// +Yé¢
+			Vector3.up, Vector3.up, Vector3.up, Vector3.up,
+			Vector3.up, Vector3.up, Vector3.up, Vector3.up,
+			Vector3.up, Vector3.up, Vector3.up, Vector3.up,
+			// -Zé¢
+			Vector3.back, Vector3.back,
+			Vector3.back, Vector3.back, Vector3.back, Vector3.back,
+			Vector3.back, Vector3.back, Vector3.back, Vector3.back,
+			// +Zé¢
+			Vector3.forward, Vector3.forward,
+			Vector3.forward, Vector3.forward, Vector3.forward, Vector3.forward,
+			Vector3.forward, Vector3.forward, Vector3.forward, Vector3.forward
+		};
+
+		List<int> indices = new List<int> {
+			// -Xé¢
+			0, 1, 2, 2, 1, 3,
+			4, 5, 6, 6, 5, 7,
+			// +Xé¢
+			8, 9, 10, 10, 9, 11,
+			12, 13, 14, 14, 13, 15,
+			// -Yé¢
+			16, 17, 18, 18, 17, 19,
+			18, 19, 20, 20, 19, 21,
+			20, 21, 22, 22, 21, 23,
+			// +Yé¢
+			24, 25, 26, 26, 25, 27,
+			28, 29, 30, 30, 29, 31,
+			32, 33, 34, 34, 33, 35,
+			// -Zé¢
+			36, 37, 39, 39, 37, 40,
+			38, 39, 42, 42, 39, 43,
+			39, 40, 43, 43, 40, 44,
+			40, 41, 44, 44, 41, 45,
+			// +Zé¢
+			46, 47, 49, 49, 47, 50,
+			48, 49, 52, 52, 49, 53,
+			49, 50, 53, 53, 50, 54,
+			50, 51, 54, 54, 51, 55
+		};
+
+		// ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
 		Mesh mesh = new Mesh();
-
-		float angle = Mathf.PI / 4;
-		float x0 = -thickness / 2;
-		float x1 = -thickness / 2 + sideRound;
-		float x2 = thickness / 2 - sideRound;
-		float x3 = thickness / 2;
-		float y0 = 0;
-		float y1 = sideRound;
-		float y2 = height - sideRound;
-		float y3 = height;
-		float z0 = -thickness / 2 * Mathf.Sin(angle);
-		float z1 = 0;
-		float z2 = length - endRound;
-		float z3 = length;
-
-		// ’¸“_ƒoƒbƒtƒ@‚Ìì¬
-		List<Vector3> vertices = Get3x3GridVertices(x0, x1, x2, x3, y0, y1, y2, y3, z0, z1, z2, z3);
-
-		// UVƒoƒbƒtƒ@‚Ìì¬
-		List<Vector2> uvs = new List<Vector2>();
-		// -X–Ê
-		int k = 0;
-		for (int i = 0; i < 16; i++, k++) {
-			uvs.Add(new Vector2(vertices[k].z, vertices[k].y));
-		}
-		// +X–Ê
-		for (int i = 0; i < 16; i++, k++) {
-			uvs.Add(new Vector2(vertices[k].z, vertices[k].y));
-		}
-		// -Y–Ê
-		for (int i = 0; i < 16; i++, k++) {
-			uvs.Add(new Vector2(vertices[k].x, vertices[k].z));
-		}
-		// +Y–Ê
-		for (int i = 0; i < 16; i++, k++) {
-			uvs.Add(new Vector2(vertices[k].x, vertices[k].z));
-		}
-		// -Z–Ê
-		for (int i = 0; i < 16; i++, k++) {
-			uvs.Add(new Vector2(vertices[k].x, vertices[k].y));
-		}
-		// +Z–Ê
-		for (int i = 0; i < 16; i++, k++) {
-			uvs.Add(new Vector2(vertices[k].x, vertices[k].y));
-		}
-
-		// ’¸“_‚Ì–@üƒoƒbƒtƒ@‚Ìì¬
-		List<Vector3> normals = Get3x3GridNormals(vertices);
-
-		// ’¸“_‚ÌˆÊ’u‚Ì’²®
-		for (int i = 0; i < vertices.Count; i++) {
-			Vector3 vertex = vertices[i];
-			if (vertex.z == z0) {
-				vertices[i] = new Vector3(vertex.x * Mathf.Cos(angle), vertex.y, vertex.z);
-			}
-		}
-
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
-		List<int> indices = new List<int>();
-		for (int i = 0; i < 6; i++) {
-			indices.AddRange(GetGridIndices(3, 3, i * 16));
-		}
-
-		// ƒƒbƒVƒ…‚Ìì¬
 		mesh.SetVertices(vertices);
 		mesh.SetNormals(normals);
-		mesh.SetUVs(0, uvs);
+		mesh.SetUVs(0, PlanarMapUVs(vertices, normals, Vector3.zero));
+		//mesh.SetUVs(0, uvs);
 		mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 		mesh.RecalculateBounds();
 		mesh.RecalculateTangents();
@@ -89,42 +137,42 @@ public class ProcedualMesh {
 	}
 
 	/// <summary>
-	/// 3~3‚ÌŠiqó‚É®—ñ‚µ‚½ƒƒbƒVƒ…‚Å\¬‚³‚ê‚½’¼•û‘Ì‚Ì’¸“_ƒoƒbƒtƒ@‚ğì¬‚·‚éB
+	/// 3Ã—3ã®æ ¼å­çŠ¶ã«æ•´åˆ—ã—ãŸãƒ¡ãƒƒã‚·ãƒ¥ã§æ§‹æˆã•ã‚ŒãŸç›´æ–¹ä½“ã®é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ä½œæˆã™ã‚‹ã€‚
 	/// </summary>
-	/// <returns>ì¬‚µ‚½’¸“_ƒoƒbƒtƒ@</returns>
-	private static List<Vector3> Get3x3GridVertices(float x0, float x1, float x2, float x3, float y0, float y1, float y2, float y3, float z0, float z1, float z2, float z3) {
+	/// <returns>ä½œæˆã—ãŸé ‚ç‚¹ãƒãƒƒãƒ•ã‚¡</returns>
+	public static List<Vector3> Get3x3GridVertices(float x0, float x1, float x2, float x3, float y0, float y1, float y2, float y3, float z0, float z1, float z2, float z3) {
 		List<Vector3> vertices = new List<Vector3> {
-			// -X–Ê
+			// -Xé¢
 			new Vector3(x0, y0, z3), new Vector3(x0, y0, z2), new Vector3(x0, y0, z1), new Vector3(x0, y0, z0),
 			new Vector3(x0, y1, z3), new Vector3(x0, y1, z2), new Vector3(x0, y1, z1), new Vector3(x0, y1, z0),
 			new Vector3(x0, y2, z3), new Vector3(x0, y2, z2), new Vector3(x0, y2, z1), new Vector3(x0, y2, z0),
 			new Vector3(x0, y3, z3), new Vector3(x0, y3, z2), new Vector3(x0, y3, z1), new Vector3(x0, y3, z0),
 
-			// +X–Ê
+			// +Xé¢
 			new Vector3(x3, y0, z0), new Vector3(x3, y0, z1), new Vector3(x3, y0, z2), new Vector3(x3, y0, z3),
 			new Vector3(x3, y1, z0), new Vector3(x3, y1, z1), new Vector3(x3, y1, z2), new Vector3(x3, y1, z3),
 			new Vector3(x3, y2, z0), new Vector3(x3, y2, z1), new Vector3(x3, y2, z2), new Vector3(x3, y2, z3),
 			new Vector3(x3, y3, z0), new Vector3(x3, y3, z1), new Vector3(x3, y3, z2), new Vector3(x3, y3, z3),
 
-			// -Y–Ê
+			// -Yé¢
 			new Vector3(x3, y0, z0), new Vector3(x2, y0, z0), new Vector3(x1, y0, z0), new Vector3(x0, y0, z0),
 			new Vector3(x3, y0, z1), new Vector3(x2, y0, z1), new Vector3(x1, y0, z1), new Vector3(x0, y0, z1),
 			new Vector3(x3, y0, z2), new Vector3(x2, y0, z2), new Vector3(x1, y0, z2), new Vector3(x0, y0, z2),
 			new Vector3(x3, y0, z3), new Vector3(x2, y0, z3), new Vector3(x1, y0, z3), new Vector3(x0, y0, z3),
 
-			// +Y–Ê
+			// +Yé¢
 			new Vector3(x0, y3, z0), new Vector3(x1, y3, z0), new Vector3(x2, y3, z0), new Vector3(x3, y3, z0),
 			new Vector3(x0, y3, z1), new Vector3(x1, y3, z1), new Vector3(x2, y3, z1), new Vector3(x3, y3, z1),
 			new Vector3(x0, y3, z2), new Vector3(x1, y3, z2), new Vector3(x2, y3, z2), new Vector3(x3, y3, z2),
 			new Vector3(x0, y3, z3), new Vector3(x1, y3, z3), new Vector3(x2, y3, z3), new Vector3(x3, y3, z3),
 
-			// -Z–Ê
+			// -Zé¢
 			new Vector3(x0, y0, z0), new Vector3(x1, y0, z0), new Vector3(x2, y0, z0), new Vector3(x3, y0, z0),
 			new Vector3(x0, y1, z0), new Vector3(x1, y1, z0), new Vector3(x2, y1, z0), new Vector3(x3, y1, z0),
 			new Vector3(x0, y2, z0), new Vector3(x1, y2, z0), new Vector3(x2, y2, z0), new Vector3(x3, y2, z0),
 			new Vector3(x0, y3, z0), new Vector3(x1, y3, z0), new Vector3(x2, y3, z0), new Vector3(x3, y3, z0),
 
-			// +Z–Ê
+			// +Zé¢
 			new Vector3(x3, y0, z3), new Vector3(x2, y0, z3), new Vector3(x1, y0, z3), new Vector3(x0, y0, z3),
 			new Vector3(x3, y1, z3), new Vector3(x2, y1, z3), new Vector3(x1, y1, z3), new Vector3(x0, y1, z3),
 			new Vector3(x3, y2, z3), new Vector3(x2, y2, z3), new Vector3(x1, y2, z3), new Vector3(x0, y2, z3),
@@ -134,12 +182,12 @@ public class ProcedualMesh {
 	}
 
 	/// <summary>
-	/// 3~3‚ÌŠiqó‚É®—ñ‚µ‚½ƒƒbƒVƒ…‚Å\¬‚³‚ê‚½’¼•û‘Ì‚Ì–@üƒoƒbƒtƒ@‚ğì¬‚·‚éB
+	/// 3Ã—3ã®æ ¼å­çŠ¶ã«æ•´åˆ—ã—ãŸãƒ¡ãƒƒã‚·ãƒ¥ã§æ§‹æˆã•ã‚ŒãŸç›´æ–¹ä½“ã®æ³•ç·šãƒãƒƒãƒ•ã‚¡ã‚’ä½œæˆã™ã‚‹ã€‚
 	/// </summary>
-	/// <returns>ì¬‚µ‚½’¸“_ƒoƒbƒtƒ@</returns>
-	private static List<Vector3> Get3x3GridNormals(List<Vector3> vertices) {
+	/// <returns>ä½œæˆã—ãŸé ‚ç‚¹ãƒãƒƒãƒ•ã‚¡</returns>
+	public static List<Vector3> Get3x3GridNormals(List<Vector3> vertices) {
 
-		// ŠeÀ•W‚ÌÅ¬’lEÅ‘å’l‚ÌZo
+		// å„åº§æ¨™ã®æœ€å°å€¤ãƒ»æœ€å¤§å€¤ã®ç®—å‡º
 		float x0 = float.PositiveInfinity;
 		float x3 = float.NegativeInfinity;
 		float y0 = float.PositiveInfinity;
@@ -156,7 +204,7 @@ public class ProcedualMesh {
 			if (vertex.z > z3) z3 = vertex.z;
 		}
 
-		// ŠeÀ•W‚ÌÅ¬’lEÅ‘å’l‚Æˆê’v‚·‚é‚©”»’è‚µ‚Ä–@ü‚ğì¬
+		// å„åº§æ¨™ã®æœ€å°å€¤ãƒ»æœ€å¤§å€¤ã¨ä¸€è‡´ã™ã‚‹ã‹åˆ¤å®šã—ã¦æ³•ç·šã‚’ä½œæˆ
 		List<Vector3> normals = new List<Vector3>();
 		for (int i = 0; i < vertices.Count; i++) {
 			Vector3 vertex = vertices[i];
@@ -183,13 +231,69 @@ public class ProcedualMesh {
 	}
 
 	/// <summary>
-	/// Šiqó‚É®—ñ‚µ‚½ƒƒbƒVƒ…‚ÌƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğì¬‚·‚éB
+	/// 3Ã—3ã®æ ¼å­çŠ¶ã«æ•´åˆ—ã—ãŸãƒ¡ãƒƒã‚·ãƒ¥ã§æ§‹æˆã•ã‚ŒãŸç›´æ–¹ä½“ã®UVãƒãƒƒãƒ•ã‚¡ã‚’ä½œæˆã™ã‚‹ã€‚
 	/// </summary>
-	/// <param name="gridSizeX">Šiq‚Ì‰¡ƒTƒCƒY(lŠpŒ`‚Ì”)</param>
-	/// <param name="gridSizeY">Šiq‚ÌcƒTƒCƒY(lŠpŒ`‚Ì”)</param>
-	/// <param name="offset">ƒCƒ“ƒfƒbƒNƒX‚ÌƒIƒtƒZƒbƒg</param>
-	/// <returns>ì¬‚µ‚½ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@</returns>
-	private static List<int> GetGridIndices(int gridSizeX, int gridSizeY, int offset) {
+	/// <returns>ä½œæˆã—ãŸUVãƒãƒƒãƒ•ã‚¡</returns>
+	public static List<Vector2> Get3x3GridUVs(List<Vector3> vertices, Vector3 offset) {
+		List<Vector2> uvs = new List<Vector2>();
+
+		// -Xé¢
+		int k = 0;
+		for (int i = 0; i < 16; i++, k++) {
+			Vector3 vertex = vertices[k] + offset;
+			uvs.Add(new Vector2(-vertices[k].z, vertices[k].y));
+		}
+		// +Xé¢
+		for (int i = 0; i < 16; i++, k++) {
+			Vector3 vertex = vertices[k] + offset;
+			uvs.Add(new Vector2(vertices[k].z, vertices[k].y));
+		}
+		// -Yé¢
+		for (int i = 0; i < 16; i++, k++) {
+			Vector3 vertex = vertices[k] + offset;
+			uvs.Add(new Vector2(-vertices[k].x, vertices[k].z));
+		}
+		// +Yé¢
+		for (int i = 0; i < 16; i++, k++) {
+			Vector3 vertex = vertices[k] + offset;
+			uvs.Add(new Vector2(-vertices[k].x, -vertices[k].z));
+		}
+		// -Zé¢
+		for (int i = 0; i < 16; i++, k++) {
+			Vector3 vertex = vertices[k] + offset;
+			uvs.Add(new Vector2(-vertices[k].x, -vertices[k].y));
+		}
+		// +Zé¢
+		for (int i = 0; i < 16; i++, k++) {
+			Vector3 vertex = vertices[k] + offset;
+			uvs.Add(new Vector2(-vertices[k].x, vertices[k].y));
+		}
+
+		return uvs;
+	}
+
+	/// <summary>
+	/// 3Ã—3ã®æ ¼å­çŠ¶ã«æ•´åˆ—ã—ãŸãƒ¡ãƒƒã‚·ãƒ¥ã§æ§‹æˆã•ã‚ŒãŸç›´æ–¹ä½“ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ä½œæˆã™ã‚‹ã€‚
+	/// </summary>
+	/// <returns>ä½œæˆã—ãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡</returns>
+	public static List<int> Get3x3GridIndices() {
+		List<int> indices = new List<int>();
+
+		for (int i = 0; i < 6; i++) {
+			indices.AddRange(GetGridIndices(3, 3, i * 16));
+		}
+
+		return indices;
+	}
+
+	/// <summary>
+	/// æ ¼å­çŠ¶ã«æ•´åˆ—ã—ãŸãƒ¡ãƒƒã‚·ãƒ¥ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ä½œæˆã™ã‚‹ã€‚
+	/// </summary>
+	/// <param name="gridSizeX">æ ¼å­ã®æ¨ªã‚µã‚¤ã‚º(å››è§’å½¢ã®æ•°)</param>
+	/// <param name="gridSizeY">æ ¼å­ã®ç¸¦ã‚µã‚¤ã‚º(å››è§’å½¢ã®æ•°)</param>
+	/// <param name="offset">ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ</param>
+	/// <returns>ä½œæˆã—ãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡</returns>
+	public static List<int> GetGridIndices(int gridSizeX, int gridSizeY, int offset) {
 		List<int> indices = new List<int>();
 
 		for (int y = 0; y < gridSizeY; y++) {
@@ -210,4 +314,103 @@ public class ProcedualMesh {
 		return indices;
 	}
 
+	/// <summary>
+	/// é ‚ç‚¹ã¨æ³•ç·šã®æƒ…å ±ã‹ã‚‰Planar Mappingã§UVãƒãƒƒãƒ•ã‚¡ã‚’ä½œæˆã™ã‚‹ã€‚
+	/// </summary>
+	/// <returns>ä½œæˆã—ãŸUVãƒãƒƒãƒ•ã‚¡</returns>
+	public static List<Vector2> PlanarMapUVs(List<Vector3> vertices, List<Vector3> normals, Vector3 offset) {
+		List<Vector2> uvs = new List<Vector2>();
+
+		for (int i = 0; i < normals.Count; i++) {
+			Vector3 vertex = vertices[i] + offset;
+			Vector3 normal = normals[i];
+			float absX = Mathf.Abs(normal.x);
+			float absY = Mathf.Abs(normal.y);
+			float absZ = Mathf.Abs(normal.z);
+			if (absX > absY && absX > absZ) {
+				if (normal.x < 0) {
+					// -Xé¢
+					uvs.Add(new Vector2(-vertices[i].z, vertices[i].y));
+				} else {
+					// +Xé¢
+					uvs.Add(new Vector2(vertices[i].z, vertices[i].y));
+				}
+			} else if (absY > absZ) {
+				if (normal.y < 0) {
+					// -Yé¢
+					uvs.Add(new Vector2(-vertices[i].x, vertices[i].z));
+				} else {
+					// +Yé¢
+					uvs.Add(new Vector2(-vertices[i].x, -vertices[i].z));
+				}
+			} else {
+				if (normal.z < 0) {
+					// -Zé¢
+					uvs.Add(new Vector2(-vertices[i].x, -vertices[i].y));
+				} else {
+					// +Zé¢
+					uvs.Add(new Vector2(-vertices[i].x, vertices[i].y));
+				}
+			}
+		}
+
+		return uvs;
+	}
+
+	public static Mesh MergeMeshes(params Mesh[] meshes) {
+		Mesh mergedMesh = null;
+		for (int i = 0; i < meshes.Length; i++) {
+			mergedMesh = MergeTwoMeshes(mergedMesh, meshes[i]);
+		}
+		return mergedMesh;
+	}
+
+	private static Mesh MergeTwoMeshes(Mesh a, Mesh b) {
+
+		// nullã‚„ç©ºã ã£ãŸå ´åˆã®å‡¦ç†
+		bool aIsEmpty = a == null || a.vertices.Length == 0;
+		bool bIsEmpty = b == null || b.vertices.Length == 0;
+		if (aIsEmpty && bIsEmpty) {
+			return null;
+		} else if (aIsEmpty) {
+			return b;
+		} else if (bIsEmpty) {
+			return a;
+		}
+
+		// é ‚ç‚¹ã®ãƒãƒ¼ã‚¸
+		List<Vector3> vertices = new List<Vector3>();
+		vertices.AddRange(a.vertices);
+		vertices.AddRange(b.vertices);
+
+		// æ³•ç·šã®ãƒãƒ¼ã‚¸
+		List<Vector3> normals = new List<Vector3>();
+		vertices.AddRange(a.normals);
+		vertices.AddRange(b.normals);
+
+		// UVã®ãƒãƒ¼ã‚¸
+		List<Vector2> uv = new List<Vector2>();
+		uv.AddRange(a.uv);
+		uv.AddRange(b.uv);
+
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ãƒãƒ¼ã‚¸
+		List<int> indices = new List<int>();
+		for (int i = 0; i < a.GetIndices(0).Length; i++) {
+			indices.Add(a.GetIndices(0)[i]);
+		}
+		for (int i = 0; i < b.GetIndices(0).Length; i++) {
+			indices.Add(b.GetIndices(0)[i] + a.vertices.Length);
+		}
+
+		// ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆ
+		Mesh mesh = new Mesh();
+		mesh.SetVertices(vertices);
+		mesh.SetNormals(normals);
+		mesh.SetUVs(0, uv);
+		mesh.SetIndices(indices, MeshTopology.Triangles, 0);
+		mesh.RecalculateBounds();
+		mesh.RecalculateTangents();
+
+		return mesh;
+	}
 }
