@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class TransitionCurve {
 
-	private const int START_DIVISION = 1;
-	private const int MAX_DIVISION = 65536;
-
 	/// <summary> 開始点の曲率[radians/m] </summary>
 	public double startCurvature { get; }
 
@@ -16,76 +13,101 @@ public class TransitionCurve {
 	/// <summary> 緩和曲線の長さ[m] </summary>
 	public double length { get; }
 
-	public List<List<double>> x { get; private set; }
-	public List<List<double>> y { get; private set; }
+	/// <summary> 使用する積分法 </summary>
+	public QuadratureRules rule { get; }
 
-	public TransitionCurve(double startCurvature, double endCurvature, double length) {
+	/// <summary> 分割数 </summary>
+	public int division { get; }
+
+	public List<Vector2d> points { get; private set; }
+	public List<QuadraticBezierCurve2D> bezierCurves { get; private set; }
+
+	/// <summary>
+	/// コンストラクタ(積分法、分割数未指定)
+	/// </summary>
+	/// <param name="startCurvature">開始点の曲率[radians/m]</param>
+	/// <param name="endCurvature">終了点の曲率[radians/m]</param>
+	/// <param name="length">緩和曲線の長さ[m]</param>
+	public TransitionCurve(double startCurvature, double endCurvature, double length)
+		: this(startCurvature, endCurvature, length, QuadratureRules.Closed10, 256) { }
+
+	/// <summary>
+	/// コンストラクタ(積分法、分割数指定)
+	/// </summary>
+	/// <param name="startCurvature">開始点の曲率[radians/m]</param>
+	/// <param name="endCurvature">終了点の曲率[radians/m]</param>
+	/// <param name="length">緩和曲線の長さ[m]</param>
+	/// <param name="rule">使用する積分法</param>
+	/// <param name="division">分割数</param>
+	public TransitionCurve(double startCurvature, double endCurvature, double length, QuadratureRules rule, int division) {
+
 		this.startCurvature = startCurvature;
 		this.endCurvature = endCurvature;
 		this.length = length;
+		this.rule = rule;
+		this.division = division;
 
-		Quadrature(QuadratureRules.Closed10);
+		points = new() { Vector2d.zero };
+		for (int i = 0; i < division; i++) {
+			double a = length * (i + 0) / division;
+			double b = length * (i + 1) / division;
+			Vector2d quadratured = Quadrature(a, b, rule);
+			points.Add(points[i] + quadratured);
+		}
 
-		int index = 1;
-		for (int division = START_DIVISION * 2; division <= MAX_DIVISION; division *= 2) {
-			double x0 = x[index - 1][x[index - 1].Count - 1];
-			double y0 = y[index - 1][y[index - 1].Count - 1];
-			double x1 = x[index - 0][x[index - 0].Count - 1];
-			double y1 = y[index - 0][y[index - 0].Count - 1];
-			double diff = Math.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
-			double diffRate = diff / length;
-			Debug.Log(division + " : " + diffRate);
-			index++;
+		bezierCurves = new() { new QuadraticBezierCurve2D(points[0], points[1], (points[1] + points[2]) / 2) };
+		for (int i = 2; i <= division - 2; i++) {
+			bezierCurves.Add(new QuadraticBezierCurve2D((points[i - 1] + points[i]) / 2, points[i], (points[i] + points[i + 1]) / 2));
+		}
+		bezierCurves.Add(new QuadraticBezierCurve2D((points[division - 2] + points[division - 1]) / 2, points[division - 1], points[division]));
+	}
+
+	/// <summary>
+	/// 曲線のある時刻の座標を、二次ベジェ曲線補間で取得する。
+	/// </summary>
+	/// <param name="t">時刻(0～1)</param>
+	/// <returns>曲線上の座標</returns>
+	public Vector2 GetPosition(float t) {
+		t = t * division;
+		if (t < 1.5) {
+			return bezierCurves[0].P(t / 1.5f);
+		} else if (t >= division - 1.5f) {
+			return bezierCurves[division - 2].P((t - (division - 1.5f)) / 1.5f);
+		} else {
+			return bezierCurves[(int)(t - 1.5f) + 1].P(t - (int)(t - 1.5f) - 1.5f);
 		}
 	}
 
-	private void Quadrature(QuadratureRules rule) {
-		x = new();
-		y = new();
-		for (int division = START_DIVISION; division <= MAX_DIVISION; division *= 2) {
-			List<double> tempX = new();
-			List<double> tempY = new();
-
-			tempX.Add(0);
-			tempY.Add(0);
-
-			for (int i = 0; i < division; i++) {
-				double a = length * (i + 0) / division;
-				double b = length * (i + 1) / division;
-				Vector3d quadratured = Quadrature(a, b, rule);
-
-				tempX.Add(tempX[i] + quadratured.x);
-				tempY.Add(tempY[i] + quadratured.y);
-			}
-			x.Add(tempX);
-			y.Add(tempY);
-		}
+	/// <summary>
+	/// 曲線のある時刻の曲率を取得する。
+	/// </summary>
+	/// <param name="t">時刻(0～1)</param>
+	/// <returns>曲線の曲率</returns>
+	public double GetCurvature(double t) {
+		double s = length * t;
+		return (endCurvature + startCurvature) / 2 - ((endCurvature - startCurvature) / 2 * Math.Cos(Math.PI * s / length));
 	}
 
-	public enum QuadratureRules {
-		/// <summary> 1次の閉じたニュートン・コーツの公式(台形公式) </summary>
-		Closed1,
-		/// <summary> 2次の閉じたニュートン・コーツの公式(シンプソンの公式) </summary>
-		Closed2,
-		/// <summary> 3次の閉じたニュートン・コーツの公式(シンプソンの3/8公式) </summary>
-		Closed3,
-		/// <summary> 4次の閉じたニュートン・コーツの公式(ブールの公式) </summary>
-		Closed4,
-		/// <summary> 6次の閉じたニュートン・コーツの公式 </summary>
-		Closed6,
-		/// <summary> 8次の閉じたニュートン・コーツの公式 </summary>
-		Closed8,
-		/// <summary> 10次の閉じたニュートン・コーツの公式 </summary>
-		Closed10,
-		/// <summary> 0次の開いたニュートン・コーツの公式(中点則) </summary>
-		Open0,
-		/// <summary> 1次の開いたニュートン・コーツの公式(台形法) </summary>
-		Open1,
-		/// <summary> 2次の開いたニュートン・コーツの公式(ミルンの公式) </summary>
-		Open2
+	/// <summary>
+	/// 曲線のある時刻の角度を取得する。
+	/// </summary>
+	/// <param name="t">時刻(0～1)</param>
+	/// <returns>曲線の角度</returns>
+	public double GetAngle(double t) {
+		double s = length * t;
+		return (endCurvature + startCurvature) / 2 * s - ((endCurvature - startCurvature) / (2 * Math.PI) * Math.Sin(Math.PI * s / length) * length);
 	}
-	private Vector3d Quadrature(double a, double b, QuadratureRules rule) {
-		Vector3d f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
+
+	/// <summary>
+	/// 特定区間について数値積分を実施する
+	/// </summary>
+	/// <param name="a">区間の始まり</param>
+	/// <param name="b">区間の終わり</param>
+	/// <param name="rule">積分法</param>
+	/// <returns>x座標、y座標についてそれぞれ数値積分した結果</returns>
+	/// <exception cref="Exception">積分法</exception>
+	private Vector2d Quadrature(double a, double b, QuadratureRules rule) {
+		Vector2d f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
 
 		switch (rule) {
 
@@ -109,7 +131,7 @@ public class TransitionCurve {
 				f1 = f(a + (b - a) * (1.0 / 3.0));
 				f2 = f(a + (b - a) * (2.0 / 3.0));
 				f3 = f(a + (b - a) * (3.0 / 3.0));
-				return ((b - a) / 8) * (f0 + f3 + 3 * (f1 +f2) );
+				return ((b - a) / 8) * (f0 + f3 + 3 * (f1 + f2));
 
 			// ブールの公式
 			case QuadratureRules.Closed4:
@@ -182,35 +204,61 @@ public class TransitionCurve {
 		}
 	}
 
-	private Vector3d f(double s) {
-		double angle = endCurvature / 2 * (s - length / Math.PI * Math.Sin(Math.PI * s / length));
-		return new Vector3d(Math.Cos(angle), Math.Sin(angle));
+	private Vector2d f(double s) {
+		double angle = (endCurvature + startCurvature) / 2 * s - ((endCurvature - startCurvature) / (2 * Math.PI) * Math.Sin(Math.PI * s / length) * length);
+		return new Vector2d(Math.Cos(angle), Math.Sin(angle));
 	}
 
-	private struct Vector3d {
+	public enum QuadratureRules {
+		/// <summary> 1次の閉じたニュートン・コーツの公式(台形公式) </summary>
+		Closed1,
+		/// <summary> 2次の閉じたニュートン・コーツの公式(シンプソンの公式) </summary>
+		Closed2,
+		/// <summary> 3次の閉じたニュートン・コーツの公式(シンプソンの3/8公式) </summary>
+		Closed3,
+		/// <summary> 4次の閉じたニュートン・コーツの公式(ブールの公式) </summary>
+		Closed4,
+		/// <summary> 6次の閉じたニュートン・コーツの公式 </summary>
+		Closed6,
+		/// <summary> 8次の閉じたニュートン・コーツの公式 </summary>
+		Closed8,
+		/// <summary> 10次の閉じたニュートン・コーツの公式 </summary>
+		Closed10,
+		/// <summary> 0次の開いたニュートン・コーツの公式(中点則) </summary>
+		Open0,
+		/// <summary> 1次の開いたニュートン・コーツの公式(台形法) </summary>
+		Open1,
+		/// <summary> 2次の開いたニュートン・コーツの公式(ミルンの公式) </summary>
+		Open2
+	}
+
+	public struct Vector2d {
 		public double x { get; }
 		public double y { get; }
-		public double l { get; }
 
-		public Vector3d(double x, double y) {
+		public Vector2d(double x, double y) {
 			this.x = x;
 			this.y = y;
-			l = Math.Sqrt(x * x + y * y);
 		}
-		public Vector3d(double x, double y, double l) {
+		public Vector2d(double x, double y, double l) {
 			this.x = x;
 			this.y = y;
-			this.l = l;
 		}
 
-		public static Vector3d operator +(Vector3d left, Vector3d right)
-			=> new Vector3d(left.x + right.x, left.y + right.y, left.l + right.l);
-		public static Vector3d operator -(Vector3d left, Vector3d right)
-			=> new Vector3d(left.x - right.x, left.y - right.y, left.l - right.l);
-		public static Vector3d operator *(Vector3d left, double right)
-			=> new Vector3d(left.x * right, left.y * right, left.l * right);
-		public static Vector3d operator *(double left, Vector3d right)
-			=> new Vector3d(left * right.x, left * right.y, left * right.l);
+		static public Vector2d zero => new Vector2d(0, 0, 0);
+
+		public static Vector2d operator +(Vector2d left, Vector2d right)
+			=> new Vector2d(left.x + right.x, left.y + right.y);
+		public static Vector2d operator -(Vector2d left, Vector2d right)
+			=> new Vector2d(left.x - right.x, left.y - right.y);
+		public static Vector2d operator *(Vector2d left, double right)
+			=> new Vector2d(left.x * right, left.y * right);
+		public static Vector2d operator /(Vector2d left, double right)
+			=> new Vector2d(left.x / right, left.y / right);
+		public static Vector2d operator *(double left, Vector2d right)
+			=> new Vector2d(left * right.x, left * right.y);
+
+		public static implicit operator Vector2(Vector2d vector2d) => new Vector2((float)vector2d.x, (float)vector2d.y);
 	}
 }
 

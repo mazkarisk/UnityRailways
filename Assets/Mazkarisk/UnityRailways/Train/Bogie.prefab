@@ -85,7 +85,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   physicsMaterial: {fileID: 13400000, guid: 3bd4d287c5e123d4daf3ce21630c884c, type: 2}
   colliderMaterial: {fileID: 2100000, guid: b95f751c0f8c57141851e121a18880d5, type: 2}
-  targetVelocityInKph: 160
+  targetVelocityInKph: 60
   goJournalBoxFL: {fileID: 2414270824546237394}
   goJournalBoxFR: {fileID: 6314268375171727988}
   goJournalBoxRL: {fileID: 4871159830778538036}
