@@ -7,34 +7,36 @@ public class RailConstructor : MonoBehaviour {
 
 	private const float RANDOMISE_MAGNITUDE = 0.000f;
 
+	private const float RADIUS = 150;
 	private List<TransitionCurve> transitionCurves = new List<TransitionCurve>(){
-		new TransitionCurve(0, 0, 75),
-		new TransitionCurve(0, 1.0 / 150, (2 * Mathf.PI / 12f / (0 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 0, (2 * Mathf.PI / 12f / (0 + 1.0 / 150))),
-		new TransitionCurve(0, 0, 150),
-		new TransitionCurve(0, 1.0 / 150, (2 * Mathf.PI / 12f / (0 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 1.0 / 150, (2 * Mathf.PI / 12f / (1.0 / 150 + 1.0 / 150))),
-		new TransitionCurve(1.0 / 150, 0, (2 * Mathf.PI / 12f / (0 + 1.0 / 150))),
-		new TransitionCurve(0, 0, 75),
+		new TransitionCurve(0, 0, RADIUS/2),
+		new TransitionCurve(0, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 0, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
+		new TransitionCurve(0, 0, RADIUS/2),
+		new TransitionCurve(0, 0, RADIUS/2),
+		new TransitionCurve(0, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 0, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
+		new TransitionCurve(0, 0, RADIUS/2)
 	};
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -53,8 +55,8 @@ public class RailConstructor : MonoBehaviour {
 			Vector3 from, to;
 			from = previousCurveEndPosition;
 
-			for (int j = 1; j <= 100; j++) {
-				float t = j / 100.0f;
+			for (int j = 1; j <= 50; j++) {
+				float t = j / 50.0f;
 				Vector2 curvePosition = transitionCurves[i].GetPosition(t);
 				double curveAngle = transitionCurves[i].GetAngle(t);
 				double curveCurvature = transitionCurves[i].GetCurvature(t);
@@ -64,12 +66,15 @@ public class RailConstructor : MonoBehaviour {
 				toL = to + Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0) * Vector3.left * (1.067f + 0.065f) * 0.5f;
 				toR = to + Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0) * Vector3.right * (1.067f + 0.065f) * 0.5f;
 
+				// ƒJƒ“ƒg‚ÌÝ’è
+				/*
 				if (curveCurvature > 0) {
-					toL += Vector3.up * (float)curveCurvature * 22.5f;
+					toL += Vector3.up * (float)curveCurvature * 7.5f;
 				}
 				if (curveCurvature < 0) {
-					toR += Vector3.up * -(float)curveCurvature * 22.5f;
+					toR += Vector3.up * -(float)curveCurvature * 7.5f;
 				}
+				*/
 
 				GameObject goL = CreateRail(fromL, toL);
 				GameObject goR = CreateRail(fromR, toR);
