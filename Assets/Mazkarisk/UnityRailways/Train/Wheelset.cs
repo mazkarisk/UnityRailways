@@ -1,131 +1,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class Wheelset : MonoBehaviour {
-	public PhysicsMaterial physicsMaterial { get; set; } = null;
-	public Material colliderMaterial { get; set; } = null;
 
 	const int treadDivisions = 80;
 	const int flangeDivisions = 80;
-
-	const float colliderExtension = 0.01f; //TODO
 
 	public float wheelDiameter { get; set; } = 0.860f;
 	public float wheelThickness { get; set; } = 0.125f;
 	public float treadReferencePosition { get; set; } = 0.065f;
 	public float backGauge { get; set; } = 0.990f;
 
+	const float treadBevel = 0.005f;
+	const float treadSlope = 1f / 20f;
+	const float flangeHeight = 0.030f;
+	const float flangeRadius = 0.010f;
+	const float flangeInsideAngle = 82;
+	const float flangeOutsideAngle = 65;
+	const float treadFrangeDistance = 0.010f;
+	const float colliderExtension = 0.01f;
 
-	float treadBevel = 0.005f;
-	float treadSlope = 1f / 10f; // TODO
-	float flangeHeight = 0.045f; // TODO
-	float flangeRadius = 0.010f;
-	float flangeInsideAngle = 82;
-	float flangeOutsideAngle = 65;
-	float treadFrangeDistance = 0.010f;
+	private bool refreshMeshesRequired = true;
+	[SerializeField] public PhysicsMaterial physicsMaterial = null;
+	[SerializeField] public Material colliderMaterial = null;
 
-	/*
-	 *　｜　　　基準(0, 0)　　　　　｜
-	 *　①　　　　　｜　　　　　　　｜　　
-	 *　：＼　　　　↓　　　　　　　｜　　
-	 *　②…③―――★――④　　　　⑩
-	 *　　　　　　　　　　　⑤　　　/
-	 *　　┌→+X　　　　　　　⑥⑧⑨
-	 *　　↓　　　　　　　　　└⑦┘
-	 *　　+Y
-	 */
-	private float wheelRadius;
-	private Vector2 point1;
-	private Vector2 point2;
-	private Vector2 point3;
-	private Vector2 point4;
-	private Vector2 point5;
-	private Vector2 point6;
-	private Vector2 point7;
-	private Vector2 point8;
-	private Vector2 point9;
-	private Vector2 point10;
-	Vector2[][] treadColliderPoints = null;
-	Vector2[][] flangeColliderPoints = null;
-
-	private GameObject goWheelL = null;
-	private GameObject goWheelR = null;
-	[SerializeField] private GameObject goAxelL = null;
-	[SerializeField] private GameObject goAxelC = null;
-	[SerializeField] private GameObject goAxelR = null;
-
-	public GameObject getWheelL() {
-		if (goWheelL == null) {
-			Initialize();
-		}
-		return goWheelL;
-	}
-	public GameObject getWheelR() {
-		if (goWheelR == null) {
-			Initialize();
-		}
-		return goWheelR;
-	}
 	public GameObject getAxelL() {
-		if (goAxelL == null) {
-			Initialize();
-		}
-		return goAxelL;
-	}
-	public GameObject getAxelC() {
-		if (goAxelC == null) {
-			Initialize();
-		}
-		return goAxelC;
+		return transform.Find("AxelL").gameObject;
 	}
 	public GameObject getAxelR() {
-		if (goAxelR == null) {
-			Initialize();
-		}
-		return goAxelR;
+		return transform.Find("AxelR").gameObject;
 	}
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
-		Initialize();
+		RefreshMeshes();
+		refreshMeshesRequired = false;
+	}
+
+	void OnValidate() {
+		refreshMeshesRequired = true;
 	}
 
 	// Update is called once per frame
 	void Update() {
-
+		// 必要に応じてメッシュを初期化する
+		if (refreshMeshesRequired) {
+			RefreshMeshes();
+			refreshMeshesRequired = false;
+		}
 	}
 
-	void Initialize() {
-		CalculatePoints();
+	void RefreshMeshes() {
+		/*
+		 *　｜　　　基準(0, 0)　　　　　｜
+		 *　①　　　　　｜　　　　　　　｜　　
+		 *　：＼　　　　↓　　　　　　　｜　　
+		 *　②…③―――★――④　　　　⑩
+		 *　　　　　　　　　　　⑤　　　/
+		 *　　┌→+X　　　　　　　⑥⑧⑨
+		 *　　↓　　　　　　　　　└⑦┘
+		 *　　+Y
+		 */
+		float wheelRadius = wheelDiameter / 2f;
+		Vector2 point1;
+		Vector2 point2;
+		Vector2 point3;
+		Vector2 point4;
+		Vector2 point5;
+		Vector2 point6;
+		Vector2 point7;
+		Vector2 point8;
+		Vector2 point9;
+		Vector2 point10;
 
-		Mesh[] treadColliderMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, false), CreateCylinderMesh(treadColliderPoints[1], treadDivisions, false), CreateCylinderMesh(treadColliderPoints[2], treadDivisions, false) };
-		//Mesh[] treadColliderMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, false) };
-		Mesh[] flangeColliderMesh = new Mesh[] { CreateCylinderMesh(flangeColliderPoints[0], flangeDivisions, false) };
-		Mesh[] treadRendererMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, true), CreateCylinderMesh(treadColliderPoints[1], treadDivisions, true), CreateCylinderMesh(treadColliderPoints[2], treadDivisions, true) };
-		//Mesh[] treadRendererMesh = new Mesh[] { CreateCylinderMesh(treadColliderPoints[0], treadDivisions, true) };
-		Mesh[] flangeRendererMesh = new Mesh[] { CreateCylinderMesh(flangeColliderPoints[0], flangeDivisions, true) };
-
-		if (goWheelL == null) {
-			goWheelL = CreateWheelObject("WheelL", transform, treadColliderMesh, flangeColliderMesh, treadRendererMesh, flangeRendererMesh, physicsMaterial, colliderMaterial);
-			goWheelL.transform.localPosition = new Vector3(-(backGauge / 2f + treadReferencePosition), 0f, 0f);
-			goWheelL.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
-		}
-
-		if (goWheelR == null) {
-			goWheelR = CreateWheelObject("WheelR", transform, treadColliderMesh, flangeColliderMesh, treadRendererMesh, flangeRendererMesh, physicsMaterial, colliderMaterial);
-			goWheelR.transform.localPosition = new Vector3(backGauge / 2f + treadReferencePosition, 0f, 0f);
-			goWheelR.transform.localEulerAngles = new Vector3(360f / (treadDivisions * 2f), 180f, 0f);
-		}
-;
-		JointWheelAndAxel(goWheelL, goAxelL, Vector3.left * (wheelThickness - treadReferencePosition), Vector3.right * 0.2f);
-		JointWheelAndAxel(goWheelL, goAxelC, Vector3.right * treadReferencePosition, Vector3.left * 0.495f);
-		JointWheelAndAxel(goWheelR, goAxelC, Vector3.right * treadReferencePosition, Vector3.right * 0.495f);
-		JointWheelAndAxel(goWheelR, goAxelR, Vector3.left * (wheelThickness - treadReferencePosition), Vector3.left * 0.2f);
-
-	}
-
-	private void CalculatePoints() {
-		wheelRadius = wheelDiameter / 2f;
 		float flangeInsideSlope = Mathf.Tan(flangeInsideAngle * Mathf.Deg2Rad);
 		float flangeOutsideSlope = Mathf.Tan(flangeOutsideAngle * Mathf.Deg2Rad);
 
@@ -149,130 +97,51 @@ public class Wheelset : MonoBehaviour {
 		point5.y = treadFrangeDistance;
 		point5.x = point6.x - (point6.y - point5.y) / flangeOutsideSlope;
 
-		// 踏面-フランジ外面
+		// 踏面-フランジ外面の交点
 		point4.x = (point6.x * flangeOutsideSlope - point6.y) / (flangeOutsideSlope - treadSlope);
 		point4.y = point4.x * treadSlope;
-
-		// (参考)導出過程
-		// 踏面とフランジ外面の直線は以下の式で表せる。
-		// 　踏面の式 : y = treadSlope * x ※切片は0。
-		// 　フランジ外面の式：y = flangeOutsideSlope * x - point6.x * flangeOutsideSlope + point6.y
-		// 2式から交点を求める。
-		// 　treadSlope * x = flangeOutsideSlope * x - point6.x * flangeOutsideSlope + point6.y
-		// 　flangeOutsideSlope * x - treadSlope * x = point6.x * flangeOutsideSlope - point6.y
-		// 　(flangeOutsideSlope - treadSlope) * x = point6.x * flangeOutsideSlope - point6.y
-		// 　x = (point6.x * flangeOutsideSlope - point6.y) / (flangeOutsideSlope - treadSlope)
 
 		// コライダー形状
 		float tan1 = Mathf.Tan(flangeInsideAngle * Mathf.Deg2Rad);
 		float tan2 = Mathf.Tan((180 - flangeInsideAngle) / 2 * Mathf.Deg2Rad);
 		float tan3 = Mathf.Tan((180 - flangeOutsideAngle) / 2 * Mathf.Deg2Rad);
-		treadColliderPoints = new Vector2[][] {
-			new Vector2[] {
-				point4+(point4 - point2).normalized  * colliderExtension + Vector2.up * wheelRadius,
-				point2 + Vector2.up * wheelRadius
-			},
-			new Vector2[] {
-				((Vector2.zero + point4) / 2 + point4 + point5) / 3 + Vector2.up * wheelRadius,
-				(Vector2.zero + point4) / 2 + Vector2.up * wheelRadius
-			},
-			new Vector2[] {
-				point5 + Vector2.up * wheelRadius,
-				((Vector2.zero + point4) / 2 + point4 + point5) / 3 + Vector2.up * wheelRadius
-			}/**/
+		Vector2[] treadCollider1Points = new Vector2[] {
+			point4+(point4 - point2).normalized  * colliderExtension + Vector2.up * wheelRadius,
+			point2 + Vector2.up * wheelRadius
 		};
-		flangeColliderPoints = new Vector2[][] {
-			/*
-			new Vector2[] {
-				point10 + Vector2.up * wheelRadius,
-				new Vector2(point10.x - flangeHeight / tan1, wheelRadius + flangeHeight),
-				new Vector2(point10.x - flangeHeight / tan1 - flangeRadius * (1 / tan2 + 1 / tan3), wheelRadius + flangeHeight),
-				point4 + (point4 - point6).normalized * colliderExtension + Vector2.up * wheelRadius
-			}
-			*/
-			new Vector2[] {
-				point10 + Vector2.up * (flangeHeight + wheelRadius),
-				new Vector2(point10.x - flangeHeight / tan1 - flangeRadius * (1 / tan2 + 1 / tan3), wheelRadius + flangeHeight),
-				point4 + (point4 - point6).normalized * colliderExtension + Vector2.up * wheelRadius
-			}
+		Vector2[] treadCollider2Points = new Vector2[] {
+			point5 + Vector2.up * wheelRadius,
+			(Vector2.zero + point4) / 2 + Vector2.up * wheelRadius
 		};
-	}
+		Vector2[] flangeColliderPoints = new Vector2[] {
+			point10 + Vector2.up * (flangeHeight + wheelRadius),
+			new Vector2(point10.x - flangeHeight / tan1 - flangeRadius * (1 / tan2 + 1 / tan3), wheelRadius + flangeHeight),
+			point4 + (point4 - point6).normalized * colliderExtension + Vector2.up * wheelRadius
+		};
 
-	// TODO ドキュメント整備
-	private static GameObject CreateWheelObject(string name, Transform parent, Mesh[] treadColliderMesh, Mesh[] flangeColliderMesh, Mesh[] treadRendererMesh, Mesh[] flangeRendererMesh, PhysicsMaterial physicsMaterial, Material colliderMaterial) {
+		// Meshの生成
+		Mesh treadCollider1Mesh = CreateCylinderMesh(treadCollider1Points, treadDivisions, false);
+		Mesh treadRenderer1Mesh = CreateCylinderMesh(treadCollider1Points, treadDivisions, true);
+		Mesh treadCollider2Mesh = CreateCylinderMesh(treadCollider2Points, treadDivisions, false);
+		Mesh treadRenderer2Mesh = CreateCylinderMesh(treadCollider2Points, treadDivisions, true);
+		Mesh flangeRenderer1Mesh = CreateCylinderMesh(flangeColliderPoints, flangeDivisions, true);
+		Mesh flangeCollider1Mesh = CreateCylinderMesh(flangeColliderPoints, flangeDivisions, false);
 
-		GameObject wheelObject = new GameObject(name);
-		wheelObject.transform.parent = parent;
-		wheelObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+		// Meshの設定
+		transform.Find("WheelL").Find("TreadCollider1").GetComponent<MeshFilter>().mesh = treadRenderer1Mesh;
+		transform.Find("WheelR").Find("TreadCollider1").GetComponent<MeshFilter>().mesh = treadRenderer1Mesh;
+		transform.Find("WheelL").Find("TreadCollider1").GetComponent<MeshCollider>().sharedMesh = treadCollider1Mesh;
+		transform.Find("WheelR").Find("TreadCollider1").GetComponent<MeshCollider>().sharedMesh = treadCollider1Mesh;
 
-		for (int i = 0; i < treadRendererMesh.Length; i++) {
-			GameObject treadObject = new GameObject(name + "_TreadCollider" + (i + 1));
-			treadObject.transform.parent = wheelObject.transform;
-			treadObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-			MeshRenderer treadRenderer = treadObject.AddComponent<MeshRenderer>();
-			treadRenderer.sharedMaterial = colliderMaterial;
-			MeshFilter treadFilter = treadObject.AddComponent<MeshFilter>();
-			treadFilter.mesh = treadRendererMesh[i];
-			MeshCollider treadCollider = treadObject.AddComponent<MeshCollider>();
-			treadCollider.convex = true;
-			treadCollider.sharedMesh = treadColliderMesh[i];
-			treadCollider.material = physicsMaterial;
-		}
+		transform.Find("WheelL").Find("TreadCollider2").GetComponent<MeshFilter>().mesh = treadRenderer2Mesh;
+		transform.Find("WheelR").Find("TreadCollider2").GetComponent<MeshFilter>().mesh = treadRenderer2Mesh;
+		transform.Find("WheelL").Find("TreadCollider2").GetComponent<MeshCollider>().sharedMesh = treadCollider2Mesh;
+		transform.Find("WheelR").Find("TreadCollider2").GetComponent<MeshCollider>().sharedMesh = treadCollider2Mesh;
 
-		for (int i = 0; i < flangeRendererMesh.Length; i++) {
-			GameObject flangeObject = new GameObject(name + "_FlangeCollider" + (i + 1));
-			flangeObject.transform.parent = wheelObject.transform;
-			flangeObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-			MeshRenderer flangeRenderer = flangeObject.AddComponent<MeshRenderer>();
-			flangeRenderer.sharedMaterial = colliderMaterial;
-			MeshFilter flangeFilter = flangeObject.AddComponent<MeshFilter>();
-			flangeFilter.mesh = flangeRendererMesh[i];
-			MeshCollider flangeCollider = flangeObject.AddComponent<MeshCollider>();
-			flangeCollider.convex = true;
-			flangeCollider.sharedMesh = flangeColliderMesh[i];
-			flangeCollider.material = physicsMaterial;
-		}
-
-		Rigidbody rigidbody = wheelObject.AddComponent<Rigidbody>();
-		rigidbody.mass = 200; // TODO
-		rigidbody.linearDamping = 0f;
-		rigidbody.angularDamping = 0f;  // TODO いる？
-
-		wheelObject.AddComponent<WorldDamper>();
-
-		return wheelObject;
-	}
-
-	// TODO ドキュメント整備
-	ConfigurableJoint JointWheelAndAxel(GameObject wheelObject, GameObject axelObject, Vector3 anchor, Vector3 connectedAnchor) {
-		SoftJointLimitSpring spring = new SoftJointLimitSpring();
-		spring.spring = 100000000f;
-		spring.damper = 100000000f;
-		SoftJointLimit limit = new SoftJointLimit();
-		limit.limit = 0.000001f;
-
-		ConfigurableJoint joint = wheelObject.AddComponent<ConfigurableJoint>();
-		joint.autoConfigureConnectedAnchor = false;
-		joint.enableCollision = false;
-		joint.connectedBody = axelObject.GetComponent<Rigidbody>();
-		joint.anchor = anchor;
-		joint.connectedAnchor = connectedAnchor;
-		joint.xMotion = ConfigurableJointMotion.Limited;   // TODO
-		joint.yMotion = ConfigurableJointMotion.Locked;   // TODO
-		joint.zMotion = ConfigurableJointMotion.Locked;   // TODO
-		joint.angularXMotion = ConfigurableJointMotion.Locked;// TODO
-		joint.angularYMotion = ConfigurableJointMotion.Locked;    // TODO
-		joint.angularZMotion = ConfigurableJointMotion.Locked;    // TODO
-		joint.linearLimit = limit;
-		joint.highAngularXLimit = limit;
-		joint.lowAngularXLimit = limit;
-		joint.angularYLimit = limit;
-		joint.angularZLimit = limit;
-		joint.linearLimitSpring = spring;
-		joint.angularXLimitSpring = spring;
-		joint.angularYZLimitSpring = spring;
-
-		return joint;
+		transform.Find("WheelL").Find("FlangeCollider1").GetComponent<MeshFilter>().mesh = flangeRenderer1Mesh;
+		transform.Find("WheelR").Find("FlangeCollider1").GetComponent<MeshFilter>().mesh = flangeRenderer1Mesh;
+		transform.Find("WheelL").Find("FlangeCollider1").GetComponent<MeshCollider>().sharedMesh = flangeCollider1Mesh;
+		transform.Find("WheelR").Find("FlangeCollider1").GetComponent<MeshCollider>().sharedMesh = flangeCollider1Mesh;
 	}
 
 	/// <summary>

@@ -3,11 +3,6 @@ using UnityEngine;
 
 public class Bogie : MonoBehaviour {
 	[SerializeField]
-	PhysicsMaterial physicsMaterial = null;
-	[SerializeField]
-	Material colliderMaterial = null;
-
-	[SerializeField]
 	float targetVelocityInKph = 100f;
 
 	[SerializeField]
@@ -18,43 +13,19 @@ public class Bogie : MonoBehaviour {
 	GameObject goJournalBoxRL;
 	[SerializeField]
 	GameObject goJournalBoxRR;
-
 	[SerializeField]
-	GameObject wheelsetPrefab;
+	GameObject goWheelsetF;
+	[SerializeField]
+	GameObject goWheelsetR;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
-		float wheelDiameter = 0.860f;
-
-		//GameObject goF = new GameObject();
-		GameObject goF = Instantiate(wheelsetPrefab);
-		goF.name = "—ÖŽ²F";
-		goF.transform.parent = transform;
-		goF.transform.localPosition = new Vector3(0f, wheelDiameter / 2f, 2.1f / 2f);
-		goF.transform.localRotation = Quaternion.identity;
-		goF.transform.localScale = Vector3.one;
-		//Wheelset wheelsetF = goF.AddComponent<Wheelset>();
-		Wheelset wheelsetF = goF.GetComponent<Wheelset>();
-		wheelsetF.physicsMaterial = physicsMaterial;
-		wheelsetF.colliderMaterial = colliderMaterial;
-
-		//GameObject goR = new GameObject();
-		GameObject goR = Instantiate(wheelsetPrefab);
-		goR.name = "—ÖŽ²R";
-		goR.transform.parent = transform;
-		goR.transform.localPosition = new Vector3(0f, wheelDiameter / 2f, -2.1f / 2f);
-		goR.transform.localRotation = Quaternion.identity;
-		goR.transform.localScale = Vector3.one;
-		//Wheelset wheelsetR = goR.AddComponent<Wheelset>();
-		Wheelset wheelsetR = goR.GetComponent<Wheelset>();
-		wheelsetR.physicsMaterial = physicsMaterial;
-		wheelsetR.colliderMaterial = colliderMaterial;
-
+		Wheelset wheelsetF = goWheelsetF.GetComponent<Wheelset>();
+		Wheelset wheelsetR = goWheelsetR.GetComponent<Wheelset>();
 		JointWheelAndJournalBox(wheelsetF.getAxelL(), goJournalBoxFL, Vector3.zero, new Vector3(-(1.640f - 0.560f) / 2f, 0, 0));
 		JointWheelAndJournalBox(wheelsetF.getAxelR(), goJournalBoxFR, Vector3.zero, new Vector3((1.640f - 0.560f) / 2f, 0, 0));
 		JointWheelAndJournalBox(wheelsetR.getAxelL(), goJournalBoxRL, Vector3.zero, new Vector3(-(1.640f - 0.560f) / 2f, 0, 0));
 		JointWheelAndJournalBox(wheelsetR.getAxelR(), goJournalBoxRR, Vector3.zero, new Vector3((1.640f - 0.560f) / 2f, 0, 0));
-
 	}
 
 	// TODO
