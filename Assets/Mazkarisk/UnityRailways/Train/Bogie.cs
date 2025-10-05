@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class Bogie : MonoBehaviour {
 	[SerializeField]
-	float targetVelocityInKph = 100f;
-
-	[SerializeField]
 	GameObject goJournalBoxFL;
 	[SerializeField]
 	GameObject goJournalBoxFR;
@@ -18,6 +15,12 @@ public class Bogie : MonoBehaviour {
 	[SerializeField]
 	GameObject goWheelsetR;
 
+	Queue<BogieData> bogieDataQueue = new Queue<BogieData>();
+	public Vector3 averagedAngularVelocity { get; private set; } = Vector3.zero;
+	public Vector3 averagedLinearVelocity { get; private set; } = Vector3.zero;
+	public float averagedFixedDeltaTime { get; private set; } = 1 / 60f;
+	public float torque { get; set; } = 0f;
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
 		Wheelset wheelsetF = goWheelsetF.GetComponent<Wheelset>();
@@ -28,23 +31,6 @@ public class Bogie : MonoBehaviour {
 		JointWheelAndJournalBox(wheelsetR.getAxelR(), goJournalBoxRR, Vector3.zero, new Vector3((1.640f - 0.560f) / 2f, 0, 0));
 	}
 
-	// TODO
-	struct BogieData {
-		public readonly float fixedDeltaTime { get; }
-		public readonly Vector3 localAngularVelocity { get; }
-		public readonly Vector3 localLinearVelocity { get; }
-		public BogieData(float fixedDeltaTime, Vector3 localAngularVelocity, Vector3 localLinearVelocity) {
-			this.fixedDeltaTime = fixedDeltaTime;
-			this.localAngularVelocity = localAngularVelocity;
-			this.localLinearVelocity = localLinearVelocity;
-		}
-	}
-	Queue<BogieData> bogieDataQueue = new Queue<BogieData>();
-
-	Vector3 averagedAngularVelocity = Vector3.zero;
-	Vector3 averagedLinearVelocity = Vector3.zero;
-	float averagedFixedDeltaTime = 1 / 60f;
-
 	// Update is called once per frame
 	void FixedUpdate() {
 		Rigidbody rigidbody = gameObject.GetComponent<Rigidbody>();
@@ -54,49 +40,14 @@ public class Bogie : MonoBehaviour {
 		averagedLinearVelocity = (averagedLinearVelocity * (ratio - Time.fixedDeltaTime) + transform.InverseTransformVector(rigidbody.linearVelocity) * Time.fixedDeltaTime) / ratio;
 		averagedFixedDeltaTime = (averagedFixedDeltaTime * (ratio - Time.fixedDeltaTime) + Time.fixedDeltaTime * Time.fixedDeltaTime) / ratio;
 
-		/*
-		bogieDataQueue.Enqueue(new BogieData(Time.fixedDeltaTime, transform.InverseTransformVector(rigidbody.angularVelocity), transform.InverseTransformVector(rigidbody.linearVelocity)));
-		foreach (var bogieData in bogieDataQueue) {
-			bogieData.;
-		}
-		*/
-		float targetVelocityInMps = targetVelocityInKph / 3.6f;
-		float hoge = (targetVelocityInMps + 0.5f) - averagedLinearVelocity.z;
-		if (hoge < 0) {
-			hoge = 0;
-		} else if (hoge > 1) {
-			hoge = 1;
-		} else {
-			hoge = 1 - hoge * hoge;
-		}
-
-		rigidbody.AddForce(transform.forward * 200f * hoge, ForceMode.Acceleration);
-
-	}
-
-	// TODO
-	private GUIStyle style = new GUIStyle();
-	private GUIStyleState styleState = new GUIStyleState();
-	void OnGUI() {
-		int y = 0;
-		style.fontStyle = FontStyle.Normal;
-		style.fontSize = 20;
-		styleState.textColor = Color.white;
-		style.normal = styleState;
-
-		GUI.Label(new Rect(10, y += 20, 500, 20), "averagedLinearVelocity    [m/s] : " + averagedLinearVelocity.ToString(), style);
-		GUI.Label(new Rect(10, y += 20, 500, 20), "averagedAngularVelocity [rad/s] : " + averagedAngularVelocity.ToString(), style);
-		GUI.Label(new Rect(10, y += 20, 500, 20), "averagedFixedDeltaTime : " + averagedFixedDeltaTime, style);
-		GUI.Label(new Rect(10, y += 20, 500, 20), "‘¬“x [km/h] : " + averagedLinearVelocity.z * 3.6f, style);
-
-		if (averagedLinearVelocity.z != 0) {
-			float curvature = averagedAngularVelocity.y / averagedLinearVelocity.z;
-			GUI.Label(new Rect(10, y += 20, 500, 20), "‹È—¦ [rad/m] : " + curvature, style);
-
-			if (curvature != 0) {
-				GUI.Label(new Rect(10, y += 20, 500, 20), "‹È—¦”¼Œa [m] : " + (1f / curvature), style);
-			}
-		}
+		Wheelset wheelsetF = goWheelsetF.GetComponent<Wheelset>();
+		Wheelset wheelsetR = goWheelsetR.GetComponent<Wheelset>();
+		Rigidbody axelRigidbodyF = wheelsetF.getAxelC().GetComponent<Rigidbody>();
+		Rigidbody axelRigidbodyR = wheelsetR.getAxelC().GetComponent<Rigidbody>();
+		axelRigidbodyF.maxAngularVelocity = float.PositiveInfinity;
+		axelRigidbodyR.maxAngularVelocity = float.PositiveInfinity;
+		axelRigidbodyF.AddRelativeTorque(new Vector3(torque, 0, 0), ForceMode.Force);
+		axelRigidbodyR.AddRelativeTorque(new Vector3(torque, 0, 0), ForceMode.Force);
 	}
 
 	ConfigurableJoint JointWheelAndJournalBox(GameObject wheel, GameObject journalBox, Vector3 anchor, Vector3 connectedAnchor) {
@@ -129,4 +80,15 @@ public class Bogie : MonoBehaviour {
 		return joint;
 	}
 
+	// TODO
+	struct BogieData {
+		public readonly float fixedDeltaTime { get; }
+		public readonly Vector3 localAngularVelocity { get; }
+		public readonly Vector3 localLinearVelocity { get; }
+		public BogieData(float fixedDeltaTime, Vector3 localAngularVelocity, Vector3 localLinearVelocity) {
+			this.fixedDeltaTime = fixedDeltaTime;
+			this.localAngularVelocity = localAngularVelocity;
+			this.localLinearVelocity = localLinearVelocity;
+		}
+	}
 }

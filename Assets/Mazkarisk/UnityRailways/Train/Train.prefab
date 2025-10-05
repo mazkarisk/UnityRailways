@@ -855,6 +855,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5881871283569736383}
   - component: {fileID: 1744788502121716548}
+  - component: {fileID: 9208777897397350731}
   m_Layer: 0
   m_Name: Train
   m_TagString: Untagged
@@ -917,6 +918,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &9208777897397350731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7882518094109888225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e113e057f6038541a45c21e8b88659d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8867767615751839702
 GameObject:
   m_ObjectHideFlags: 0
@@ -1733,7 +1746,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 449300501804426475, guid: 0a303a77609047e43b936c94d80ae394, type: 3}
       propertyPath: m_Name
-      value: Bogie
+      value: BogieF
       objectReference: {fileID: 0}
     - target: {fileID: 1938975032890675973, guid: 0a303a77609047e43b936c94d80ae394, type: 3}
       propertyPath: m_ConnectedBody
@@ -1945,7 +1958,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 449300501804426475, guid: 0a303a77609047e43b936c94d80ae394, type: 3}
       propertyPath: m_Name
-      value: Bogie (1)
+      value: BogieR
       objectReference: {fileID: 0}
     - target: {fileID: 1938975032890675973, guid: 0a303a77609047e43b936c94d80ae394, type: 3}
       propertyPath: m_ConnectedBody

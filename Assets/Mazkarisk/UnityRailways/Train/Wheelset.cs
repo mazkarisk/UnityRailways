@@ -28,6 +28,9 @@ public class Wheelset : MonoBehaviour {
 	public GameObject getAxelL() {
 		return transform.Find("AxelL").gameObject;
 	}
+	public GameObject getAxelC() {
+		return transform.Find("AxelC").gameObject;
+	}
 	public GameObject getAxelR() {
 		return transform.Find("AxelR").gameObject;
 	}
