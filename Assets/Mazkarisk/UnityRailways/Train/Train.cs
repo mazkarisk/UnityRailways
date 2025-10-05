@@ -39,13 +39,19 @@ public class Train : MonoBehaviour {
 		logText += "averagedFixedDeltaTime : " + averagedFixedDeltaTime + "\n";
 		logText += "速度 [km/h] : " + (averagedLinearVelocity.z * 3.6f).ToString("F1") + "\n";
 
+		float curvature = 0f;
 		if (averagedLinearVelocity.z != 0) {
-			float curvature = averagedAngularVelocity.y / averagedLinearVelocity.z;
-			logText += "曲率 [rad/m] : " + curvature + "\n";
-			if (curvature != 0) {
-				logText += "曲率半径 [m] : " + (1f / curvature) + "\n";
+			curvature = averagedAngularVelocity.y / averagedLinearVelocity.z;
+		}
+		logText += "曲率 [rad/m] : " + curvature.ToString("F4") + "\n";
+		float radiusFromCurvature = 0f;
+		if (curvature != 0) {
+			radiusFromCurvature = 1f / curvature;
+			if (Mathf.Abs(radiusFromCurvature) > 10000f) {
+				radiusFromCurvature = 0f;
 			}
 		}
+		logText += "曲率半径 [m] : " + radiusFromCurvature.ToString("F0") + "\n";
 
 		// ログのテキストスタイルを設定
 		GUIStyle guiStyleBack = new GUIStyle();
