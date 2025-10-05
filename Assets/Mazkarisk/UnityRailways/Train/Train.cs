@@ -34,9 +34,9 @@ public class Train : MonoBehaviour {
 		Vector3 averagedAngularVelocity = (bogieF.averagedAngularVelocity + bogieR.averagedAngularVelocity) / 2f;
 		float averagedFixedDeltaTime = (bogieF.averagedFixedDeltaTime + bogieR.averagedFixedDeltaTime) / 2f;
 		logText += "ノッチ : " + notch + " / 5\n";
-		logText += "averagedLinearVelocity    [m/s] : " + averagedLinearVelocity.ToString() + "\n";
-		logText += "averagedAngularVelocity [rad/s] : " + averagedAngularVelocity.ToString() + "\n";
-		logText += "averagedFixedDeltaTime : " + averagedFixedDeltaTime + "\n";
+		//logText += "averagedLinearVelocity    [m/s] : " + averagedLinearVelocity.ToString() + "\n";
+		//logText += "averagedAngularVelocity [rad/s] : " + averagedAngularVelocity.ToString() + "\n";
+		//logText += "averagedFixedDeltaTime : " + averagedFixedDeltaTime + "\n";
 		logText += "速度 [km/h] : " + (averagedLinearVelocity.z * 3.6f).ToString("F1") + "\n";
 
 		float curvature = 0f;
@@ -55,10 +55,10 @@ public class Train : MonoBehaviour {
 
 		// ログのテキストスタイルを設定
 		GUIStyle guiStyleBack = new GUIStyle();
-		guiStyleBack.fontSize = 20;
+		guiStyleBack.fontSize = 32;
 		guiStyleBack.normal.textColor = Color.black;
 		GUIStyle guiStyleFront = new GUIStyle();
-		guiStyleFront.fontSize = 20;
+		guiStyleFront.fontSize = 32;
 		guiStyleFront.normal.textColor = Color.white;
 
 		// 画面上にログ出力
