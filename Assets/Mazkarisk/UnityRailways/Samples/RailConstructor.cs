@@ -7,37 +7,84 @@ public class RailConstructor : MonoBehaviour {
 
 	private const float RANDOMISE_MAGNITUDE = 0.000f;
 
+	private const float RADIUS = 150;
+	private List<TransitionCurve> transitionCurves = new List<TransitionCurve>(){
+		new TransitionCurve(0, 0, RADIUS/2),
+		new TransitionCurve(0, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 0, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
+		new TransitionCurve(0, 0, RADIUS/2),
+		new TransitionCurve(0, 0, RADIUS/2),
+		new TransitionCurve(0, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (1.0 / RADIUS + 1.0 / RADIUS))),
+		new TransitionCurve(1.0 / RADIUS, 0, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
+		new TransitionCurve(0, 0, RADIUS/2)
+	};
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
-		int numDivision = 360 * 5;
 
-		float centerRadius = 1000f;
+		// レールの中心線の位置・角度
+		Vector3 previousCurveEndPosition = Vector3.zero;
+		float previousCurveEndAngle = 0f;
 
-		float cant = 0.1f;
-		float radius = centerRadius + (1.067f + 0.065f) * 0.5f;// - (Mathf.Sqrt(1.067f * 1.067f + cant * cant) - 1.067f);	// TODO 計算違う
-		for (int i = 0; i < numDivision; i++) {
-			float x1 = Mathf.Cos(2f * Mathf.PI * ((float)i / (float)numDivision)) * radius + centerRadius;
-			float z1 = Mathf.Sin(2f * Mathf.PI * ((float)i / (float)numDivision)) * radius;
-			float x2 = Mathf.Cos(2f * Mathf.PI * ((float)(i + 1) / (float)numDivision)) * radius + centerRadius;
-			float z2 = Mathf.Sin(2f * Mathf.PI * ((float)(i + 1) / (float)numDivision)) * radius;
-			Vector3 from = new Vector3(x1, cant, z1);
-			Vector3 to = new Vector3(x2, cant, z2);
-			GameObject go = CreateRail(from + Random.insideUnitSphere * RANDOMISE_MAGNITUDE, to + Random.insideUnitSphere * RANDOMISE_MAGNITUDE);
+		// 左右レールの位置
+		Vector3 fromL, fromR, toL, toR;
+		fromL = previousCurveEndPosition + Vector3.left * (1.067f + 0.065f) * 0.5f;
+		fromR = previousCurveEndPosition + Vector3.right * (1.067f + 0.065f) * 0.5f;
+
+		for (int i = 0; i < transitionCurves.Count; i++) {
+			Vector3 from, to;
+			from = previousCurveEndPosition;
+
+			for (int j = 1; j <= 50; j++) {
+				float t = j / 50.0f;
+				Vector2 curvePosition = transitionCurves[i].GetPosition(t);
+				double curveAngle = transitionCurves[i].GetAngle(t);
+				double curveCurvature = transitionCurves[i].GetCurvature(t);
+				to = Quaternion.Euler(0, previousCurveEndAngle * Mathf.Rad2Deg, 0) * new Vector3(curvePosition.y, 0, curvePosition.x) + previousCurveEndPosition;
+
+				float angle = previousCurveEndAngle + (float)curveAngle;
+				toL = to + Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0) * Vector3.left * (1.067f + 0.065f) * 0.5f;
+				toR = to + Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0) * Vector3.right * (1.067f + 0.065f) * 0.5f;
+
+				// カントの設定
+				/*
+				if (curveCurvature > 0) {
+					toL += Vector3.up * (float)curveCurvature * 7.5f;
+				}
+				if (curveCurvature < 0) {
+					toR += Vector3.up * -(float)curveCurvature * 7.5f;
+				}
+				*/
+
+				GameObject goL = CreateRail(fromL, toL);
+				GameObject goR = CreateRail(fromR, toR);
+				from = to;
+				fromL = toL;
+				fromR = toR;
+			}
+			previousCurveEndPosition = from;
+			previousCurveEndAngle += (float)transitionCurves[i].GetAngle(1);
 		}
-		radius = centerRadius - (1.067f + 0.065f) * 0.5f;
-		for (int i = 0; i < numDivision; i++) {
-			float x1 = Mathf.Cos(2f * Mathf.PI * ((float)i / (float)numDivision)) * radius + centerRadius;
-			float z1 = Mathf.Sin(2f * Mathf.PI * ((float)i / (float)numDivision)) * radius;
-			float x2 = Mathf.Cos(2f * Mathf.PI * ((float)(i + 1) / (float)numDivision)) * radius + centerRadius;
-			float z2 = Mathf.Sin(2f * Mathf.PI * ((float)(i + 1) / (float)numDivision)) * radius;
-			Vector3 from = new Vector3(x1, 0, z1);
-			Vector3 to = new Vector3(x2, 0, z2);
-			GameObject go = CreateRail(from + Random.insideUnitSphere * RANDOMISE_MAGNITUDE, to + Random.insideUnitSphere * RANDOMISE_MAGNITUDE);
-		}
-	}
-
-	// Update is called once per frame
-	void Update() {
 
 	}
 
@@ -48,38 +95,27 @@ public class RailConstructor : MonoBehaviour {
 
 		go.transform.localPosition = from;
 		go.transform.localRotation = Quaternion.LookRotation(to - from, Vector3.up);
-		//go.transform.localScale = new Vector3(1, 1, (to - from).magnitude);
 
-		/*
-		CapsuleCollider[] sc = go.GetComponentsInChildren<CapsuleCollider>();
-		for (int i = 0; i < sc.Length; i++) {
-			sc[i].height = (1 + 0.026f / (to - from).magnitude) * 2f;
-		}
-		*/
 		return go;
 	}
 
-	/*
-	TransitionCurve tc = new TransitionCurve(0, 1.0 / 11, 120);
-	private void OnDrawGizmos() {
-
-		for (int i = 0; i < tc.x.Count; i++) {
-			List<double> tempX = tc.x[i];
-			List<double> tempY = tc.y[i];
-
-			Gizmos.color = new Color(1, 0, 0, 1);
+	private void OnDrawGizmosSelected() {
+		Gizmos.color = new Color(0, 0, 1, 1);
+		Vector3 previousCurveEndPosition = Vector3.zero;
+		float previousCurveEndAngle = 0f;
+		for (int i = 0; i < transitionCurves.Count; i++) {
 			Vector3 from, to;
-
-			from = new Vector3((float)tc.x[i][0], (float)tc.y[i][0], i * 0.1f);
-			for (int j = 1; j < tc.x[i].Count; j++) {
-				if (tc.x[i].Count > 16 && j % (tc.x[i].Count / 16) > 0) {
-					continue;
-				}
-				to = new Vector3((float)tc.x[i][j], (float)tc.y[i][j], i * 0.1f);
+			var transitionCurve = transitionCurves[i];
+			from = previousCurveEndPosition;
+			for (int j = 1; j <= 100; j++) {
+				float t = j / 100.0f;
+				Vector2 curvePosition = transitionCurve.GetPosition(t);
+				to = Quaternion.Euler(0, previousCurveEndAngle * Mathf.Rad2Deg, 0) * new Vector3(curvePosition.y, 0, curvePosition.x) + previousCurveEndPosition;
 				Gizmos.DrawLine(from, to);
 				from = to;
 			}
+			previousCurveEndPosition = from;
+			previousCurveEndAngle += (float)transitionCurve.GetAngle(1);
 		}
 	}
-	*/
 }

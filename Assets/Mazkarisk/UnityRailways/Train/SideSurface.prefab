@@ -198,8 +198,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3343881908302058181}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: -0.000000030908623, z: -0.7071068, w: -0.000000030908623}
+  m_LocalPosition: {x: 0, y: 2.7, z: 0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -400,15 +400,15 @@ MonoBehaviour:
   plateThickness: 0.002
   plateEndRound: 0.001
   plateSideRound: 0.0015
-  overallHeight: 2.5
+  overallHeight: 2.7
   overallLength: 1.2
   rearApertureLength: 0.5
   rearApertureBottomHeight: 1.2
-  rearApertureTopHeight: 0.3
+  rearApertureTopHeight: 0.5
   rearApertureRound: 0.1
   frontApertureLength: 0.5
   frontApertureBottomHeight: 1.2
-  frontApertureTopHeight: 0.3
+  frontApertureTopHeight: 0.5
   frontApertureRound: 0.1
 --- !u!23 &119781865144444426
 MeshRenderer:
