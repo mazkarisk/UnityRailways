@@ -88,11 +88,6 @@ public class RailConstructor : MonoBehaviour {
 
 	}
 
-	// Update is called once per frame
-	void Update() {
-
-	}
-
 	private GameObject CreateRail(Vector3 from, Vector3 to) {
 		GameObject go = Instantiate(rail, transform);
 		Rail railComponent = go.GetComponentInChildren<Rail>();
@@ -104,7 +99,7 @@ public class RailConstructor : MonoBehaviour {
 		return go;
 	}
 
-	private void OnDrawGizmos() {
+	private void OnDrawGizmosSelected() {
 		Gizmos.color = new Color(0, 0, 1, 1);
 		Vector3 previousCurveEndPosition = Vector3.zero;
 		float previousCurveEndAngle = 0f;
