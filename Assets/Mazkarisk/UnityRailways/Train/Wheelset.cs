@@ -25,6 +25,9 @@ public class Wheelset : MonoBehaviour {
 	[SerializeField] public PhysicsMaterial physicsMaterial = null;
 	[SerializeField] public Material colliderMaterial = null;
 
+	public GameObject getGearCase() {
+		return transform.Find("GearCase").gameObject;
+	}
 	public GameObject getAxelL() {
 		return transform.Find("AxelL").gameObject;
 	}
