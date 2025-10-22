@@ -5,45 +5,45 @@ using UnityEngine;
 namespace Geometry {
 
 	/// <summary>
-	/// ’üŒ¸‹Èü‚ğ•\Œ»‚·‚éB
+	/// é€“æ¸›æ›²ç·šã‚’è¡¨ç¾ã™ã‚‹ã€‚
 	/// </summary>
 	public class TransitionCurve {
 
-		/// <summary> ŠJn“_‚Ì‹È—¦[radians/m] </summary>
+		/// <summary> é–‹å§‹ç‚¹ã®æ›²ç‡[radians/m] </summary>
 		public double startCurvature { get; }
 
-		/// <summary> I—¹“_‚Ì‹È—¦[radians/m] </summary>
+		/// <summary> çµ‚äº†ç‚¹ã®æ›²ç‡[radians/m] </summary>
 		public double endCurvature { get; }
 
-		/// <summary> ŠÉ˜a‹Èü‚Ì’·‚³[m] </summary>
+		/// <summary> ç·©å’Œæ›²ç·šã®é•·ã•[m] </summary>
 		public double length { get; }
 
-		/// <summary> g—p‚·‚éÏ•ª–@ </summary>
+		/// <summary> ä½¿ç”¨ã™ã‚‹ç©åˆ†æ³• </summary>
 		public QuadratureRules rule { get; }
 
-		/// <summary> •ªŠ„” </summary>
+		/// <summary> åˆ†å‰²æ•° </summary>
 		public int division { get; }
 
 		public List<Vector2d> points { get; private set; }
 		public List<QuadraticBezierCurve2D> bezierCurves { get; private set; }
 
 		/// <summary>
-		/// ƒRƒ“ƒXƒgƒ‰ƒNƒ^(Ï•ª–@A•ªŠ„”–¢w’è)
+		/// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(ç©åˆ†æ³•ã€åˆ†å‰²æ•°æœªæŒ‡å®š)
 		/// </summary>
-		/// <param name="startCurvature">ŠJn“_‚Ì‹È—¦[radians/m]</param>
-		/// <param name="endCurvature">I—¹“_‚Ì‹È—¦[radians/m]</param>
-		/// <param name="length">ŠÉ˜a‹Èü‚Ì’·‚³[m]</param>
+		/// <param name="startCurvature">é–‹å§‹ç‚¹ã®æ›²ç‡[radians/m]</param>
+		/// <param name="endCurvature">çµ‚äº†ç‚¹ã®æ›²ç‡[radians/m]</param>
+		/// <param name="length">ç·©å’Œæ›²ç·šã®é•·ã•[m]</param>
 		public TransitionCurve(double startCurvature, double endCurvature, double length)
 			: this(startCurvature, endCurvature, length, QuadratureRules.Closed10, 256) { }
 
 		/// <summary>
-		/// ƒRƒ“ƒXƒgƒ‰ƒNƒ^(Ï•ª–@A•ªŠ„”w’è)
+		/// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(ç©åˆ†æ³•ã€åˆ†å‰²æ•°æŒ‡å®š)
 		/// </summary>
-		/// <param name="startCurvature">ŠJn“_‚Ì‹È—¦[radians/m]</param>
-		/// <param name="endCurvature">I—¹“_‚Ì‹È—¦[radians/m]</param>
-		/// <param name="length">ŠÉ˜a‹Èü‚Ì’·‚³[m]</param>
-		/// <param name="rule">g—p‚·‚éÏ•ª–@</param>
-		/// <param name="division">•ªŠ„”</param>
+		/// <param name="startCurvature">é–‹å§‹ç‚¹ã®æ›²ç‡[radians/m]</param>
+		/// <param name="endCurvature">çµ‚äº†ç‚¹ã®æ›²ç‡[radians/m]</param>
+		/// <param name="length">ç·©å’Œæ›²ç·šã®é•·ã•[m]</param>
+		/// <param name="rule">ä½¿ç”¨ã™ã‚‹ç©åˆ†æ³•</param>
+		/// <param name="division">åˆ†å‰²æ•°</param>
 		public TransitionCurve(double startCurvature, double endCurvature, double length, QuadratureRules rule, int division) {
 
 			this.startCurvature = startCurvature;
@@ -68,10 +68,10 @@ namespace Geometry {
 		}
 
 		/// <summary>
-		/// ‹Èü‚Ì‚ ‚é‚ÌÀ•W‚ğA“ñŸƒxƒWƒF‹Èü•âŠÔ‚Åæ“¾‚·‚éB
+		/// æ›²ç·šã®ã‚ã‚‹æ™‚åˆ»ã®åº§æ¨™ã‚’ã€äºŒæ¬¡ãƒ™ã‚¸ã‚§æ›²ç·šè£œé–“ã§å–å¾—ã™ã‚‹ã€‚
 		/// </summary>
-		/// <param name="t">(0`1)</param>
-		/// <returns>‹Èüã‚ÌÀ•W</returns>
+		/// <param name="t">æ™‚åˆ»(0ï½1)</param>
+		/// <returns>æ›²ç·šä¸Šã®åº§æ¨™</returns>
 		public Vector2 GetPosition(float t) {
 			t = t * division;
 			if (t < 1.5) {
@@ -84,53 +84,53 @@ namespace Geometry {
 		}
 
 		/// <summary>
-		/// ‹Èü‚Ì‚ ‚é‚Ì‹È—¦‚ğæ“¾‚·‚éB
+		/// æ›²ç·šã®ã‚ã‚‹æ™‚åˆ»ã®æ›²ç‡ã‚’å–å¾—ã™ã‚‹ã€‚
 		/// </summary>
-		/// <param name="t">(0`1)</param>
-		/// <returns>‹Èü‚Ì‹È—¦</returns>
+		/// <param name="t">æ™‚åˆ»(0ï½1)</param>
+		/// <returns>æ›²ç·šã®æ›²ç‡</returns>
 		public double GetCurvature(double t) {
 			double s = length * t;
 			return (endCurvature + startCurvature) / 2 - ((endCurvature - startCurvature) / 2 * Math.Cos(Math.PI * s / length));
 		}
 
 		/// <summary>
-		/// ‹Èü‚Ì‚ ‚é‚ÌŠp“x‚ğæ“¾‚·‚éB
+		/// æ›²ç·šã®ã‚ã‚‹æ™‚åˆ»ã®è§’åº¦ã‚’å–å¾—ã™ã‚‹ã€‚
 		/// </summary>
-		/// <param name="t">(0`1)</param>
-		/// <returns>‹Èü‚ÌŠp“x</returns>
+		/// <param name="t">æ™‚åˆ»(0ï½1)</param>
+		/// <returns>æ›²ç·šã®è§’åº¦</returns>
 		public double GetAngle(double t) {
 			double s = length * t;
 			return (endCurvature + startCurvature) / 2 * s - ((endCurvature - startCurvature) / (2 * Math.PI) * Math.Sin(Math.PI * s / length) * length);
 		}
 
 		/// <summary>
-		/// “Á’è‹æŠÔ‚É‚Â‚¢‚Ä”’lÏ•ª‚ğÀ{‚·‚é
+		/// ç‰¹å®šåŒºé–“ã«ã¤ã„ã¦æ•°å€¤ç©åˆ†ã‚’å®Ÿæ–½ã™ã‚‹
 		/// </summary>
-		/// <param name="a">‹æŠÔ‚Ìn‚Ü‚è</param>
-		/// <param name="b">‹æŠÔ‚ÌI‚í‚è</param>
-		/// <param name="rule">Ï•ª–@</param>
-		/// <returns>xÀ•WAyÀ•W‚É‚Â‚¢‚Ä‚»‚ê‚¼‚ê”’lÏ•ª‚µ‚½Œ‹‰Ê</returns>
-		/// <exception cref="Exception">Ï•ª–@</exception>
+		/// <param name="a">åŒºé–“ã®å§‹ã¾ã‚Š</param>
+		/// <param name="b">åŒºé–“ã®çµ‚ã‚ã‚Š</param>
+		/// <param name="rule">ç©åˆ†æ³•</param>
+		/// <returns>xåº§æ¨™ã€yåº§æ¨™ã«ã¤ã„ã¦ãã‚Œãã‚Œæ•°å€¤ç©åˆ†ã—ãŸçµæœ</returns>
+		/// <exception cref="Exception">ç©åˆ†æ³•</exception>
 		private Vector2d Quadrature(double a, double b, QuadratureRules rule) {
 			Vector2d f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
 
 			switch (rule) {
 
-				// ‘äŒ`Œö®
+				// å°å½¢å…¬å¼
 				case QuadratureRules.Closed1:
 					// TODO
 					f0 = f(a + (b - a) * (0.0 / 1.0));
 					f1 = f(a + (b - a) * (1.0 / 1.0));
 					return ((b - a) / 2) * (f0 + f1);
 
-				// ƒVƒ“ƒvƒ\ƒ“‚ÌŒö®
+				// ã‚·ãƒ³ãƒ—ã‚½ãƒ³ã®å…¬å¼
 				case QuadratureRules.Closed2:
 					f0 = f(a + (b - a) * (0.0 / 2.0));
 					f1 = f(a + (b - a) * (1.0 / 2.0));
 					f2 = f(a + (b - a) * (2.0 / 2.0));
 					return ((b - a) / 6) * (f0 + 4 * f1 + f2);
 
-				// ƒVƒ“ƒvƒ\ƒ“‚Ì3/8Œö®
+				// ã‚·ãƒ³ãƒ—ã‚½ãƒ³ã®3/8å…¬å¼
 				case QuadratureRules.Closed3:
 					f0 = f(a + (b - a) * (0.0 / 3.0));
 					f1 = f(a + (b - a) * (1.0 / 3.0));
@@ -138,7 +138,7 @@ namespace Geometry {
 					f3 = f(a + (b - a) * (3.0 / 3.0));
 					return ((b - a) / 8) * (f0 + f3 + 3 * (f1 + f2));
 
-				// ƒu[ƒ‹‚ÌŒö®
+				// ãƒ–ãƒ¼ãƒ«ã®å…¬å¼
 				case QuadratureRules.Closed4:
 					f0 = f(a + (b - a) * (0.0 / 4.0));
 					f1 = f(a + (b - a) * (1.0 / 4.0));
@@ -147,7 +147,7 @@ namespace Geometry {
 					f4 = f(a + (b - a) * (4.0 / 4.0));
 					return ((b - a) / 90) * (7 * (f0 + f4) + 32 * (f1 + f3) + 12 * f2);
 
-				// 6Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®
+				// 6æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼
 				case QuadratureRules.Closed6:
 					f0 = f(a + (b - a) * (0.0 / 6.0));
 					f1 = f(a + (b - a) * (1.0 / 6.0));
@@ -158,7 +158,7 @@ namespace Geometry {
 					f6 = f(a + (b - a) * (6.0 / 6.0));
 					return ((b - a) / 840) * (41 * (f0 + f6) + 216 * (f1 + f5) + 27 * (f2 + f4) + 272 * f3);
 
-				// 8Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®
+				// 8æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼
 				case QuadratureRules.Closed8:
 					f0 = f(a + (b - a) * (0.0 / 8.0));
 					f1 = f(a + (b - a) * (1.0 / 8.0));
@@ -171,7 +171,7 @@ namespace Geometry {
 					f8 = f(a + (b - a) * (8.0 / 8.0));
 					return ((b - a) / 28350) * (989 * (f0 + f8) + 5888 * (f1 + f7) - 928 * (f2 + f6) + 10496 * (f3 + f5) - 4540 * f4);
 
-				// 10Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®
+				// 10æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼
 				case QuadratureRules.Closed10:
 					f0 = f(a + (b - a) * (0.0 / 10.0));
 					f1 = f(a + (b - a) * (1.0 / 10.0));
@@ -186,18 +186,18 @@ namespace Geometry {
 					f10 = f(a + (b - a) * (10.0 / 10.0));
 					return ((b - a) / 598752) * (16067 * (f0 + f10) + 106300 * (f1 + f9) - 48525 * (f2 + f8) + 272400 * (f3 + f7) - 260550 * (f4 + f6) + 427368 * f5);
 
-				// ’†“_‘¥
+				// ä¸­ç‚¹å‰‡
 				case QuadratureRules.Open0:
 					f0 = f(a + (b - a) * (1.0 / 2.0));
 					return (b - a) * f0;
 
-				// ‘äŒ`–@
+				// å°å½¢æ³•
 				case QuadratureRules.Open1:
 					f0 = f(a + (b - a) * (1.0 / 3.0));
 					f1 = f(a + (b - a) * (2.0 / 3.0));
 					return ((b - a) / 2) * (f0 + f1);
 
-				// ƒ~ƒ‹ƒ“‚ÌŒö®
+				// ãƒŸãƒ«ãƒ³ã®å…¬å¼
 				case QuadratureRules.Open2:
 					f0 = f(a + (b - a) * (1.0 / 4.0));
 					f1 = f(a + (b - a) * (2.0 / 4.0));
@@ -215,25 +215,25 @@ namespace Geometry {
 		}
 
 		public enum QuadratureRules {
-			/// <summary> 1Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®(‘äŒ`Œö®) </summary>
+			/// <summary> 1æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼(å°å½¢å…¬å¼) </summary>
 			Closed1,
-			/// <summary> 2Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®(ƒVƒ“ƒvƒ\ƒ“‚ÌŒö®) </summary>
+			/// <summary> 2æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼(ã‚·ãƒ³ãƒ—ã‚½ãƒ³ã®å…¬å¼) </summary>
 			Closed2,
-			/// <summary> 3Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®(ƒVƒ“ƒvƒ\ƒ“‚Ì3/8Œö®) </summary>
+			/// <summary> 3æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼(ã‚·ãƒ³ãƒ—ã‚½ãƒ³ã®3/8å…¬å¼) </summary>
 			Closed3,
-			/// <summary> 4Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®(ƒu[ƒ‹‚ÌŒö®) </summary>
+			/// <summary> 4æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼(ãƒ–ãƒ¼ãƒ«ã®å…¬å¼) </summary>
 			Closed4,
-			/// <summary> 6Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö® </summary>
+			/// <summary> 6æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼ </summary>
 			Closed6,
-			/// <summary> 8Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö® </summary>
+			/// <summary> 8æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼ </summary>
 			Closed8,
-			/// <summary> 10Ÿ‚Ì•Â‚¶‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö® </summary>
+			/// <summary> 10æ¬¡ã®é–‰ã˜ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼ </summary>
 			Closed10,
-			/// <summary> 0Ÿ‚ÌŠJ‚¢‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®(’†“_‘¥) </summary>
+			/// <summary> 0æ¬¡ã®é–‹ã„ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼(ä¸­ç‚¹å‰‡) </summary>
 			Open0,
-			/// <summary> 1Ÿ‚ÌŠJ‚¢‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®(‘äŒ`–@) </summary>
+			/// <summary> 1æ¬¡ã®é–‹ã„ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼(å°å½¢æ³•) </summary>
 			Open1,
-			/// <summary> 2Ÿ‚ÌŠJ‚¢‚½ƒjƒ…[ƒgƒ“EƒR[ƒc‚ÌŒö®(ƒ~ƒ‹ƒ“‚ÌŒö®) </summary>
+			/// <summary> 2æ¬¡ã®é–‹ã„ãŸãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³ãƒ»ã‚³ãƒ¼ãƒ„ã®å…¬å¼(ãƒŸãƒ«ãƒ³ã®å…¬å¼) </summary>
 			Open2
 		}
 
