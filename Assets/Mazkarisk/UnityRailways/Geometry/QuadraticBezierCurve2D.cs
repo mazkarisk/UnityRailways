@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Geometry {
 
 	/// <summary>
-	/// “ñŸŒ³•½–Êã‚ÌƒxƒWƒF‹Èü‚ğ•\Œ»‚·‚éB
+	/// äºŒæ¬¡å…ƒå¹³é¢ä¸Šã®ãƒ™ã‚¸ã‚§æ›²ç·šã‚’è¡¨ç¾ã™ã‚‹ã€‚
 	/// </summary>
 	public class QuadraticBezierCurve2D {
 
