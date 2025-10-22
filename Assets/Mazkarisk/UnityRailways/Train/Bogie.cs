@@ -60,7 +60,7 @@ public class Bogie : MonoBehaviour {
 			motor.force = 2000f * Mathf.Abs(notch);
 			if (notch > 0) {
 				// 前進
-				motor.targetVelocity = -100000f * (backward ? -1 : 1); // 十分に大きな値
+				motor.targetVelocity = -float.MaxValue * (backward ? -1 : 1); // 十分に大きな値
 				hingeJointF.motor = motor;
 				motor.targetVelocity = -motor.targetVelocity;
 				hingeJointR.motor = motor;
