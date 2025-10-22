@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Geometry {
 
 	/// <summary>
-	/// 曲線(直線含む)を、分割された複数の点の座標の集合で管理するクラス。
+	/// 曲線(直線含む)を、分割された複数の点の座標の集合で表現する。
 	/// </summary>
 	public class Path {
 
@@ -20,16 +20,16 @@ namespace Geometry {
 		public Path(Vector3[] positions, Vector3[] upDirection) {
 			this.positions = positions;
 
-			this.upDirection = new Vector3[this.positions.Length];
-			if (this.upDirection == null || this.upDirection.Length != positions.Length) {
-				// 上方向ベクトルが未指定なら仮の値(真上)で埋める。
-				for (int i = 0; i < this.upDirection.Length; i++) {
-					this.upDirection[i] = Vector3.up;
+			this.upDirection = new Vector3[positions.Length];
+			if (upDirection != null && upDirection.Length == positions.Length) {
+				// 上方向ベクトルが正しく指定されている場合、正規化して格納する。
+				for (int i = 0; i < upDirection.Length; i++) {
+					this.upDirection[i] = upDirection[i].normalized;
 				}
 			} else {
-				// 上方向ベクトルが指定されていれば正規化して格納する。
+				// 上方向ベクトルが未指定である場合、仮の値(真上方向)で埋める。
 				for (int i = 0; i < this.upDirection.Length; i++) {
-					this.upDirection[i] = upDirection[i].normalized;
+					this.upDirection[i] = Vector3.up;
 				}
 			}
 
