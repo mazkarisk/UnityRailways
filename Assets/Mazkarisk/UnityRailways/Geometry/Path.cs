@@ -15,7 +15,7 @@ namespace Geometry {
 		/// <summary>
 		/// コンストラクタ。
 		/// </summary>
-		/// <param name="positions">曲線上の点の座標の配列。例えば線路の線形なら数mm～数cm単位など、十分に細かい間隔であることを想定している。</param>
+		/// <param name="positions">曲線上の点の座標の配列。例えば線路の線形なら数mm～数cm単位など、十分に細かく、かつほぼ等間隔であることを想定している。</param>
 		/// <param name="upDirection">曲線上の点における上方向ベクトルの配列。内部で正規化するため、正規化されている必要はない。</param>
 		public Path(Vector3[] positions, Vector3[] upDirection) {
 			this.positions = positions;
@@ -58,7 +58,7 @@ namespace Geometry {
 		/// <summary>
 		/// パス上を指定された長さ分進んだ点について、その座標を取得する。点間は線形補間される。
 		/// </summary>
-		public Vector3 GetPositionByDistance(float distance) {
+		public Vector3 GetPosition(float distance) {
 			// 指定された距離が0以下なら、始点を返す。
 			if (distance <= 0) {
 				return positions[0];
@@ -79,19 +79,19 @@ namespace Geometry {
 		/// <summary>
 		/// パス上を指定された長さ分進んだ点について、その向きを取得する。返却値は正規化されている。
 		/// </summary>
-		public Vector3 GetDirectionByDistance(float distance) {
+		public Vector3 GetDirection(float distance) {
 			// 指定された距離をパスの範囲内に収める。
 			distance = Mathf.Clamp(distance, 0, distances[distances.Length - 1]);
 
-			Vector3 point0 = GetPositionByDistance(distance - averageInterval);
-			Vector3 point1 = GetPositionByDistance(distance + averageInterval);
+			Vector3 point0 = GetPosition(distance - averageInterval);
+			Vector3 point1 = GetPosition(distance + averageInterval);
 			return (point1 - point0).normalized;
 		}
 
 		/// <summary>
 		/// パス上を指定された長さ分進んだ点について、その上方向を取得する。返却値は正規化されている。
 		/// </summary>
-		public Vector3 GetUpDirectionByDistance(float distance) {
+		public Vector3 GetUpDirection(float distance) {
 			// 指定された距離が0以下なら、始点を返す。
 			if (distance <= 0) {
 				return upDirection[0].normalized;
@@ -112,15 +112,15 @@ namespace Geometry {
 		/// <summary>
 		/// パス上を指定された長さ分進んだ点について、その左方向を取得する。返却値は正規化されている。
 		/// </summary>
-		public Vector3 GetLeftDirectionByDistance(float distance) {
-			return Vector3.Cross(GetDirectionByDistance(distance), GetUpDirectionByDistance(distance)).normalized;
+		public Vector3 GetLeftDirection(float distance) {
+			return Vector3.Cross(GetDirection(distance), GetUpDirection(distance)).normalized;
 		}
 
 		/// <summary>
 		/// パス上を指定された長さ分進んだ点について、その右方向を取得する。返却値は正規化されている。
 		/// </summary>
-		public Vector3 GetRightDirectionByDistance(float distance) {
-			return -GetLeftDirectionByDistance(distance);
+		public Vector3 GetRightDirection(float distance) {
+			return -GetLeftDirection(distance);
 		}
 
 		/****************/
@@ -131,17 +131,27 @@ namespace Geometry {
 		/// パスを一定数に分割した頂点の配列を作成する。右手方向を正とした、横方向のオフセット量も指定できる。
 		/// </summary>
 		/// <param name="pointCount">始点と終点を含む、頂点の総数。</param>
-		/// <param name="offset">右手方向を正とした、横方向のオフセット量。</param>
+		/// <param name="rightOffset">右手方向を正とした、横方向のオフセット量。</param>
+		/// <param name="upOffset">上方向を正とした、上下方向のオフセット量。</param>
 		/// <returns>頂点の配列。</returns>
-		public Vector3[] GetPositionArray(int pointCount, float offset) {
+		public Vector3[] GetPositionArray(int pointCount, float rightOffset, float upOffset) {
 			Vector3[] result = new Vector3[pointCount];
 
 			for (int i = 0; i < pointCount; i++) {
 				float distance = GetOverallLength() * ((float)i / (pointCount - 1));
-				result[i] = GetPositionByDistance(distance) + GetRightDirectionByDistance(distance) * offset;
+				result[i] = GetPosition(distance) + GetRightDirection(distance) * rightOffset + GetUpDirection(distance) * upOffset;
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// パス上を指定された長さ分進んだ点について、その地点のパスの移動方向を向く回転を表すQuaternionを作成する。
+		/// </summary>
+		/// <param name="distance">始点からの、点間を結ぶ線上を移動した累計距離。</param>
+		/// <returns>パスの移動方向を向く回転を表すQuaternion</returns>
+		public Quaternion GetLookRotation(float distance) {
+			return Quaternion.LookRotation(GetDirection(distance), GetUpDirection(distance));
 		}
 	}
 }
