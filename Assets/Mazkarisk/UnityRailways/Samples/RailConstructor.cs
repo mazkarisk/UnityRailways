@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class RailConstructor : MonoBehaviour {
 
-	[SerializeField] GameObject rail;
-
 	private const float RANDOMISE_MAGNITUDE = 0.000f;
 
 	private const float RADIUS = 150;
@@ -42,6 +40,8 @@ public class RailConstructor : MonoBehaviour {
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
+		// レールのプレハブを読み込む
+		GameObject railChunkPrefab = (GameObject)Resources.Load("RailChunk");
 
 		// レールの中心線の位置・角度
 		Vector3 previousCurveEndPosition = Vector3.zero;
@@ -77,8 +77,8 @@ public class RailConstructor : MonoBehaviour {
 				}
 				*/
 
-				GameObject goL = CreateRail(fromL, toL);
-				GameObject goR = CreateRail(fromR, toR);
+				GameObject goL = CreateRail(railChunkPrefab, fromL, toL);
+				GameObject goR = CreateRail(railChunkPrefab, fromR, toR);
 				from = to;
 				fromL = toL;
 				fromR = toR;
@@ -89,13 +89,12 @@ public class RailConstructor : MonoBehaviour {
 
 	}
 
-	private GameObject CreateRail(Vector3 from, Vector3 to) {
-		GameObject go = Instantiate(rail, transform);
-		Rail railComponent = go.GetComponentInChildren<Rail>();
-		railComponent.SetLength((to - from).magnitude);
+	private GameObject CreateRail(GameObject railChunkPrefab, Vector3 from, Vector3 to) {
+		GameObject go = Instantiate(railChunkPrefab, transform);
 
 		go.transform.localPosition = from;
 		go.transform.localRotation = Quaternion.LookRotation(to - from, Vector3.up);
+		go.transform.localScale = new Vector3(1, 1, (to - from).magnitude);
 
 		return go;
 	}
