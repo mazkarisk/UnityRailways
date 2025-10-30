@@ -8,7 +8,7 @@ namespace Geometry {
 	public class Path {
 
 		private readonly Vector3[] positions;
-		private readonly Vector3[] upDirection;
+		private readonly Vector3[] upDirections;
 		private readonly float[] distances;
 		private readonly float averageInterval;
 
@@ -16,20 +16,20 @@ namespace Geometry {
 		/// コンストラクタ。
 		/// </summary>
 		/// <param name="positions">曲線上の点の座標の配列。例えば線路の線形なら数mm～数cm単位など、十分に細かく、かつほぼ等間隔であることを想定している。</param>
-		/// <param name="upDirection">曲線上の点における上方向ベクトルの配列。内部で正規化するため、正規化されている必要はない。</param>
-		public Path(Vector3[] positions, Vector3[] upDirection) {
+		/// <param name="upDirections">曲線上の点における上方向ベクトルの配列。内部で正規化するため、正規化されている必要はない。</param>
+		public Path(Vector3[] positions, Vector3[] upDirections) {
 			this.positions = positions;
 
-			this.upDirection = new Vector3[positions.Length];
-			if (upDirection != null && upDirection.Length == positions.Length) {
+			this.upDirections = new Vector3[positions.Length];
+			if (upDirections != null && upDirections.Length == positions.Length) {
 				// 上方向ベクトルが正しく指定されている場合、正規化して格納する。
-				for (int i = 0; i < upDirection.Length; i++) {
-					this.upDirection[i] = upDirection[i].normalized;
+				for (int i = 0; i < upDirections.Length; i++) {
+					this.upDirections[i] = upDirections[i].normalized;
 				}
 			} else {
 				// 上方向ベクトルが未指定である場合、仮の値(真上方向)で埋める。
-				for (int i = 0; i < this.upDirection.Length; i++) {
-					this.upDirection[i] = Vector3.up;
+				for (int i = 0; i < this.upDirections.Length; i++) {
+					this.upDirections[i] = Vector3.up;
 				}
 			}
 
@@ -94,19 +94,19 @@ namespace Geometry {
 		public Vector3 GetUpDirection(float distance) {
 			// 指定された距離が0以下なら、始点を返す。
 			if (distance <= 0) {
-				return upDirection[0].normalized;
+				return upDirections[0].normalized;
 			}
 
 			for (int i = 1; i < distances.Length; i++) {
 				// 指定された距離が頂点までの累計距離以下なら、頂点位置を線形補間して返す。
 				if (distance <= distances[i]) {
 					float blendRate = (distance - distances[i - 1]) / (distances[i] - distances[i - 1]);
-					return (upDirection[i] * blendRate + upDirection[i - 1] * (1 - blendRate)).normalized;
+					return (upDirections[i] * blendRate + upDirections[i - 1] * (1 - blendRate)).normalized;
 				}
 			}
 
 			// 指定された距離が全体の長さ以上なら、終点を返す。
-			return upDirection[upDirection.Length - 1].normalized;
+			return upDirections[upDirections.Length - 1].normalized;
 		}
 
 		/// <summary>
