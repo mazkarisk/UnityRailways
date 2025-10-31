@@ -44,6 +44,35 @@ namespace Geometry {
 			averageInterval = distances[distances.Length - 1] / distances.Length;
 		}
 
+		/// <summary>
+		/// TransitionCurveからPathを作成するコンストラクタ。
+		/// </summary>
+		/// <param name="original">元となるTransitionCurveオブジェクト。</param>
+		public Path(TransitionCurve original) {
+
+			positions = new Vector3[original.division + 1];
+			for (int i = 0; i < positions.Length; i++) {
+				float t = (float)i / positions.Length;
+				Vector2 tempPosition = original.GetPosition(t);
+				positions[i] = new Vector3(tempPosition.y, 0, tempPosition.x);
+			}
+
+			upDirections = new Vector3[original.division + 1];
+			for (int i = 0; i < upDirections.Length; i++) {
+				upDirections[i] = Vector3.up; // TODO 良い感じにする
+			}
+
+			// 始点からの累計距離を計算し保存しておく。
+			distances = new float[positions.Length];
+			distances[0] = 0; // 始点の累計距離は0とする。
+			for (int i = 1; i < positions.Length; i++) {
+				distances[i] = (positions[i] - positions[i - 1]).magnitude + distances[i - 1];
+			}
+
+			// 点間の平均間隔を求める。
+			averageInterval = distances[distances.Length - 1] / distances.Length;
+		}
+
 		/****************/
 		/* 基本メソッド */
 		/****************/
