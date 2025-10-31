@@ -96,8 +96,8 @@ public class Track : MonoBehaviour {
 		// レールをインスタンス化。
 		railObjectsLeft = new GameObject[railChunkCount];
 		railObjectsRight = new GameObject[railChunkCount];
-		InstantiateRail(railObjectsLeft, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, -offset, 0.200f));
-		InstantiateRail(railObjectsRight, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, offset, 0.200f));
+		InstantiateRail(railObjectsLeft, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, -offset, 0.160f));
+		InstantiateRail(railObjectsRight, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, offset, 0.160f));
 
 		// 枕木の個数を算出。
 		int sleepersCount = (int)Mathf.Ceil((path.GetOverallLength() - SleeperDepth) / MaxSleeperInterval) + 1;
