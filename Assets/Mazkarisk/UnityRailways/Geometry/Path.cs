@@ -52,7 +52,7 @@ namespace Geometry {
 
 			positions = new Vector3[original.division + 1];
 			for (int i = 0; i < positions.Length; i++) {
-				float t = (float)i / positions.Length;
+				float t = (float)i / original.division;
 				Vector2 tempPosition = original.GetPosition(t);
 				positions[i] = new Vector3(tempPosition.y, 0, tempPosition.x);
 			}
