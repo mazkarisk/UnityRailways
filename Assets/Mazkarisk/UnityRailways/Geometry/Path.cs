@@ -160,14 +160,15 @@ namespace Geometry {
 		/// パスを一定数に分割した頂点の配列を作成する。右手方向を正とした、横方向のオフセット量も指定できる。
 		/// </summary>
 		/// <param name="pointCount">始点と終点を含む、頂点の総数。</param>
+		/// <param name="edgeClearance">端の隙間。</param>
 		/// <param name="rightOffset">右手方向を正とした、横方向のオフセット量。</param>
 		/// <param name="upOffset">上方向を正とした、上下方向のオフセット量。</param>
 		/// <returns>頂点の配列。</returns>
-		public Vector3[] GetPositionArray(int pointCount, float rightOffset, float upOffset) {
+		public Vector3[] GetPositionArray(int pointCount, float edgeClearance, float rightOffset, float upOffset) {
 			Vector3[] result = new Vector3[pointCount];
 
 			for (int i = 0; i < pointCount; i++) {
-				float distance = GetOverallLength() * ((float)i / (pointCount - 1));
+				float distance = (GetOverallLength() - edgeClearance * 2f) * ((float)i / (pointCount - 1)) + edgeClearance;
 				result[i] = GetPosition(distance) + GetRightDirection(distance) * rightOffset + GetUpDirection(distance) * upOffset;
 			}
 

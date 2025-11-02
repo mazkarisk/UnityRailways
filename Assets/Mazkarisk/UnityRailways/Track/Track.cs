@@ -10,6 +10,9 @@ public class Track : MonoBehaviour {
 	/// <summary>レール頭部の幅(m)</summary>
 	const float RailHeadWidth = 0.064f;
 
+	/// <summary>レール継目の隙間(m)</summary>
+	const float RailEdgeClearance = 0.010f;
+
 	/// <summary>枕木の奥行き(m)</summary>
 	const float SleeperDepth = 0.200f;
 
@@ -96,17 +99,17 @@ public class Track : MonoBehaviour {
 		// レールをインスタンス化。
 		railObjectsLeft = new GameObject[railChunkCount];
 		railObjectsRight = new GameObject[railChunkCount];
-		InstantiateRail(railObjectsLeft, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, -offset, 0.160f));
-		InstantiateRail(railObjectsRight, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, offset, 0.160f));
+		InstantiateRail(railObjectsLeft, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, RailEdgeClearance, -offset, 0.160f));
+		InstantiateRail(railObjectsRight, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, RailEdgeClearance, offset, 0.160f));
 
 		// 枕木の個数を算出。
-		int sleepersCount = (int)Mathf.Ceil((path.GetOverallLength() - SleeperDepth) / MaxSleeperInterval) + 1;
+		int sleepersCount = (int)Mathf.Ceil((path.GetOverallLength() - SleeperDepth - RailEdgeClearance) / MaxSleeperInterval) + 1;
 
 		// 枕木をインスタンス化。
 		railSleeperObjects = new GameObject[sleepersCount];
-		float sleeperInterval = (path.GetOverallLength() - SleeperDepth) / (sleepersCount - 1);
+		float sleeperInterval = (path.GetOverallLength() - SleeperDepth - RailEdgeClearance) / (sleepersCount - 1);
 		for (int i = 0; i < sleepersCount; i++) {
-			float distance = SleeperDepth * 0.5f + sleeperInterval * i;
+			float distance = RailEdgeClearance * 0.5f + SleeperDepth * 0.5f + sleeperInterval * i;
 
 			railSleeperObjects[i] = Instantiate(sleeperPrefab);
 			railSleeperObjects[i].transform.parent = transform;
