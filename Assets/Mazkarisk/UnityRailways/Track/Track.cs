@@ -91,21 +91,21 @@ public class Track : MonoBehaviour {
 		GameObject sleeperPrefab = (GameObject)Resources.Load("RailSleeper");
 
 		// レールのプレハブを読み込む。
-		GameObject railChunkPrefab = (GameObject)Resources.Load("RailChunk");
+		GameObject railPrefab = (GameObject)Resources.Load("Rail");
 
 		int railChunkCount = 50;
 
 		// レールをインスタンス化する。
-		GameObject leftRailObject = new GameObject("LeftRail");
+		GameObject leftRailObject = Instantiate(railPrefab);
 		leftRailObject.transform.parent = transform;
 		leftRailObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-		leftRailComponent = leftRailObject.AddComponent<Rail>();
+		leftRailComponent = leftRailObject.GetComponent<Rail>();
 		leftRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance, -offset, 0.160f));
 
-		GameObject rightRailObject = new GameObject("RightRail");
+		GameObject rightRailObject = Instantiate(railPrefab);
 		rightRailObject.transform.parent = transform;
 		rightRailObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-		rightRailComponent = rightRailObject.AddComponent<Rail>();
+		rightRailComponent = rightRailObject.GetComponent<Rail>();
 		rightRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance, offset, 0.160f));
 
 		// 枕木の個数を算出。

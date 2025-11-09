@@ -22,12 +22,13 @@ public class Rail : MonoBehaviour {
 		// レールのプレハブを読み込む。
 		GameObject railChunkPrefab = (GameObject)Resources.Load("RailChunk");
 
+		Transform railChunksTransform = transform.Find("RailChunks");
 		railChunkObjects = new GameObject[positionArray.Length - 1];
 		for (int i = 0; i < positionArray.Length - 1; i++) {
 			Vector3 diff = positionArray[i + 1] - positionArray[i];
 
 			// レールをインスタンス化し、設定を行う。
-			railChunkObjects[i] = Instantiate(railChunkPrefab, transform);
+			railChunkObjects[i] = Instantiate(railChunkPrefab, railChunksTransform);
 			railChunkObjects[i].name = "RailChunk" + i;
 			railChunkObjects[i].transform.localPosition = positionArray[i];
 			railChunkObjects[i].transform.localRotation = Quaternion.LookRotation(diff);
