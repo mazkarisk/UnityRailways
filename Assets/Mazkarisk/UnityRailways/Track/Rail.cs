@@ -3,6 +3,26 @@ using UnityEngine;
 public class Rail : MonoBehaviour {
 
 	private GameObject[] railChunkObjects;
+	private MeshFilter topMeshFilter;
+	private MeshFilter sideMeshFilter;
+
+	private void Start() {
+		UpdateMesh(100);
+	}
+
+	public void UpdateMesh(int meshDivision) {
+		// レール頭頂面のメッシュを更新する。
+		if (topMeshFilter == null) {
+			topMeshFilter = transform.Find("TopMesh").GetComponent<MeshFilter>();
+		}
+		topMeshFilter.mesh = RailUtility.CreateTopMesh(railChunkObjects, transform, meshDivision);
+
+		// レール側面のメッシュを更新する。
+		if (sideMeshFilter == null) {
+			sideMeshFilter = transform.Find("SideMesh").GetComponent<MeshFilter>();
+		}
+		sideMeshFilter.mesh = RailUtility.CreateSideMesh(railChunkObjects, transform, meshDivision);
+	}
 
 	/// <summary>
 	/// RailChunkを取得する。
@@ -16,7 +36,7 @@ public class Rail : MonoBehaviour {
 	/// <summary>
 	/// レールのGameObjectなどを初期化する。
 	/// </summary>
-	/// <param name="positionArray">レールが通る座標の配列。</param>
+	/// <param name="positionArray">レールが通る座標(ローカル座標系)の配列。</param>
 	public void Initialize(Vector3[] positionArray) {
 
 		// レールのプレハブを読み込む。
