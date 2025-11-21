@@ -294,24 +294,22 @@ public class ProcedualMesh {
 	/// <param name="offset">インデックスのオフセット</param>
 	/// <returns>作成したインデックスバッファ</returns>
 	public static List<int> GetGridIndices(int gridSizeX, int gridSizeY, int offset) {
-		List<int> indices = new List<int>();
+		int[] indices = new int[gridSizeX * gridSizeY * 6];
+		int i = 0;
 
 		for (int y = 0; y < gridSizeY; y++) {
 			for (int x = 0; x < gridSizeX; x++) {
 				int offsetOfThisGrid = y * (gridSizeX + 1) + x + offset;
-				List<int> indicesTemp = new List<int> {
-					offsetOfThisGrid + 0                  ,
-					offsetOfThisGrid + 0 + (gridSizeX + 1),
-					offsetOfThisGrid + 1 + (gridSizeX + 1),
-					offsetOfThisGrid + 1 + (gridSizeX + 1),
-					offsetOfThisGrid + 1                  ,
-					offsetOfThisGrid + 0
-				};
-				indices.AddRange(indicesTemp);
+				indices[i++] = offsetOfThisGrid + 0;
+				indices[i++] = offsetOfThisGrid + 0 + (gridSizeX + 1);
+				indices[i++] = offsetOfThisGrid + 1 + (gridSizeX + 1);
+				indices[i++] = offsetOfThisGrid + 1 + (gridSizeX + 1);
+				indices[i++] = offsetOfThisGrid + 1;
+				indices[i++] = offsetOfThisGrid + 0;
 			}
 		}
 
-		return indices;
+		return new List<int>(indices);
 	}
 
 	/// <summary>
