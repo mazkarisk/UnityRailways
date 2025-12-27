@@ -31,8 +31,14 @@ public class Wheelset : MonoBehaviour {
 	public GameObject getAxelL() {
 		return transform.Find("AxelL").gameObject;
 	}
+	public GameObject getWheelL() {
+		return transform.Find("WheelL").gameObject;
+	}
 	public GameObject getAxelC() {
 		return transform.Find("AxelC").gameObject;
+	}
+	public GameObject getWheelR() {
+		return transform.Find("WheelR").gameObject;
 	}
 	public GameObject getAxelR() {
 		return transform.Find("AxelR").gameObject;
@@ -42,6 +48,13 @@ public class Wheelset : MonoBehaviour {
 	void Start() {
 		RefreshMeshes();
 		refreshMeshesRequired = false;
+		
+		// âÒì]ïîïiÇÃäpë¨ìxÇÃè„å¿ÇìPîpÇ∑ÇÈ
+		getAxelL().GetComponent<Rigidbody>().maxAngularVelocity = float.MaxValue;
+		getWheelL().GetComponent<Rigidbody>().maxAngularVelocity = float.MaxValue;
+		getAxelC().GetComponent<Rigidbody>().maxAngularVelocity = float.MaxValue;
+		getWheelR().GetComponent<Rigidbody>().maxAngularVelocity = float.MaxValue;
+		getAxelR().GetComponent<Rigidbody>().maxAngularVelocity = float.MaxValue;
 	}
 
 	void OnValidate() {
