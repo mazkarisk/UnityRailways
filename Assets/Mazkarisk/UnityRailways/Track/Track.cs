@@ -1,5 +1,4 @@
 using Geometry;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Track : MonoBehaviour {
@@ -10,6 +9,9 @@ public class Track : MonoBehaviour {
 	/// <summary>レール頭部の幅(m)</summary>
 	const float RailHeadWidth = 0.064f;
 
+	/// <summary>レール継目の隙間(m)</summary>
+	const float RailEdgeClearance = 0.010f;
+
 	/// <summary>枕木の奥行き(m)</summary>
 	const float SleeperDepth = 0.200f;
 
@@ -19,8 +21,8 @@ public class Track : MonoBehaviour {
 	bool requireInitialize = true;
 	Path path = null;
 
-	GameObject[] railObjectsLeft;
-	GameObject[] railObjectsRight;
+	Rail leftRailComponent;
+	Rail rightRailComponent;
 	GameObject[] railSleeperObjects;
 
 	void Start() {
@@ -89,24 +91,31 @@ public class Track : MonoBehaviour {
 		GameObject sleeperPrefab = (GameObject)Resources.Load("RailSleeper");
 
 		// レールのプレハブを読み込む。
-		GameObject railChunkPrefab = (GameObject)Resources.Load("RailChunk");
+		GameObject railPrefab = (GameObject)Resources.Load("Rail");
 
 		int railChunkCount = 50;
 
-		// レールをインスタンス化。
-		railObjectsLeft = new GameObject[railChunkCount];
-		railObjectsRight = new GameObject[railChunkCount];
-		InstantiateRail(railObjectsLeft, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, -offset, 0.200f));
-		InstantiateRail(railObjectsRight, railChunkPrefab, path.GetPositionArray(railChunkCount + 1, offset, 0.200f));
+		// レールをインスタンス化する。
+		GameObject leftRailObject = Instantiate(railPrefab);
+		leftRailObject.transform.parent = transform;
+		leftRailObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+		leftRailComponent = leftRailObject.GetComponent<Rail>();
+		leftRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance, -offset, 0.160f));
+
+		GameObject rightRailObject = Instantiate(railPrefab);
+		rightRailObject.transform.parent = transform;
+		rightRailObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+		rightRailComponent = rightRailObject.GetComponent<Rail>();
+		rightRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance, offset, 0.160f));
 
 		// 枕木の個数を算出。
-		int sleepersCount = (int)Mathf.Ceil((path.GetOverallLength() - SleeperDepth) / MaxSleeperInterval) + 1;
+		int sleepersCount = (int)Mathf.Ceil((path.GetOverallLength() - SleeperDepth - RailEdgeClearance) / MaxSleeperInterval) + 1;
 
 		// 枕木をインスタンス化。
 		railSleeperObjects = new GameObject[sleepersCount];
-		float sleeperInterval = (path.GetOverallLength() - SleeperDepth) / (sleepersCount - 1);
+		float sleeperInterval = (path.GetOverallLength() - SleeperDepth - RailEdgeClearance) / (sleepersCount - 1);
 		for (int i = 0; i < sleepersCount; i++) {
-			float distance = SleeperDepth * 0.5f + sleeperInterval * i;
+			float distance = RailEdgeClearance * 0.5f + SleeperDepth * 0.5f + sleeperInterval * i;
 
 			railSleeperObjects[i] = Instantiate(sleeperPrefab);
 			railSleeperObjects[i].transform.parent = transform;
@@ -119,44 +128,15 @@ public class Track : MonoBehaviour {
 
 			// 枕木と接続
 			int railChunkIndex = (int)((distance / path.GetOverallLength()) * railChunkCount);
-			joints[0].connectedBody = railObjectsLeft[railChunkIndex].GetComponent<Rigidbody>();
-			joints[1].connectedBody = railObjectsRight[railChunkIndex].GetComponent<Rigidbody>();
+			joints[0].connectedBody = leftRailComponent.GetRailChunkObject(railChunkIndex).GetComponent<Rigidbody>();
+			joints[1].connectedBody = rightRailComponent.GetRailChunkObject(railChunkIndex).GetComponent<Rigidbody>();
 		}
 
-	}
-
-	private void InstantiateRail(GameObject[] railObjects, GameObject railChunkPrefab, Vector3[] positionArray) {
-		for (int i = 0; i < positionArray.Length - 1; i++) {
-			Vector3 diff = positionArray[i + 1] - positionArray[i];
-
-			// レールチャンクをインスタンス化し、設定を行う。
-			railObjects[i] = Instantiate(railChunkPrefab, transform);
-			railObjects[i].name = "RailChunk" + i;
-			railObjects[i].transform.localPosition = positionArray[i];
-			railObjects[i].transform.localRotation = Quaternion.LookRotation(diff);
-			railObjects[i].transform.localScale = new Vector3(1, 1, diff.magnitude);
-			railObjects[i].GetComponent<Rigidbody>().mass = 40f * diff.magnitude;
-
-			// 最後尾のレールなら自身のJointは使用しないので削除する。
-			if (i >= positionArray.Length - 2) {
-				DestroyImmediate(railObjects[i].GetComponent<ConfigurableJoint>());
-			}
-
-			// 先頭以外の場合、一つ前のレールのJointに自身のRigidbodyを設定する。
-			if (i > 0) {
-				ConfigurableJoint joint = railObjects[i - 1].GetComponent<ConfigurableJoint>();
-				joint.connectedBody = railObjects[i].GetComponent<Rigidbody>();
-			}
-		}
 	}
 
 	public void SetKinematic(bool isKinematic) {
-		for (int i = 0; i < railObjectsLeft.Length; i++) {
-			railObjectsLeft[i].GetComponent<Rigidbody>().isKinematic = isKinematic;
-		}
-		for (int i = 0; i < railObjectsRight.Length; i++) {
-			railObjectsRight[i].GetComponent<Rigidbody>().isKinematic = isKinematic;
-		}
+		leftRailComponent.SetKinematic(isKinematic);
+		rightRailComponent.SetKinematic(isKinematic);
 		for (int i = 0; i < railSleeperObjects.Length; i++) {
 			railSleeperObjects[i].GetComponent<Rigidbody>().isKinematic = isKinematic;
 		}

@@ -38,65 +38,26 @@ public class RailConstructor : MonoBehaviour {
 		new TransitionCurve(0, 0, RADIUS/2)
 	};
 
-	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start() {
-		// レールのプレハブを読み込む
-		GameObject railChunkPrefab = (GameObject)Resources.Load("RailChunk");
 
-		// レールの中心線の位置・角度
 		Vector3 previousCurveEndPosition = Vector3.zero;
 		float previousCurveEndAngle = 0f;
 
-		// 左右レールの位置
-		Vector3 fromL, fromR, toL, toR;
-		fromL = previousCurveEndPosition + Vector3.left * (1.067f + 0.065f) * 0.5f;
-		fromR = previousCurveEndPosition + Vector3.right * (1.067f + 0.065f) * 0.5f;
-
 		for (int i = 0; i < transitionCurves.Count; i++) {
-			Vector3 from, to;
-			from = previousCurveEndPosition;
+			Quaternion rotator = Quaternion.Euler(0, Mathf.Rad2Deg * previousCurveEndAngle, 0);
 
-			for (int j = 1; j <= 50; j++) {
-				float t = j / 50.0f;
-				Vector2 curvePosition = transitionCurves[i].GetPosition(t);
-				double curveAngle = transitionCurves[i].GetAngle(t);
-				double curveCurvature = transitionCurves[i].GetCurvature(t);
-				to = Quaternion.Euler(0, previousCurveEndAngle * Mathf.Rad2Deg, 0) * new Vector3(curvePosition.y, 0, curvePosition.x) + previousCurveEndPosition;
+			GameObject trackObject = new GameObject("Track" + i);
+			trackObject.transform.parent = transform;
+			trackObject.transform.localPosition = previousCurveEndPosition;
+			trackObject.transform.localRotation = rotator;
+			trackObject.transform.localScale = Vector3.one;
+			trackObject.AddComponent<Track>().Initialize(new Path(transitionCurves[i]));
 
-				float angle = previousCurveEndAngle + (float)curveAngle;
-				toL = to + Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0) * Vector3.left * (1.067f + 0.065f) * 0.5f;
-				toR = to + Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0) * Vector3.right * (1.067f + 0.065f) * 0.5f;
-
-				// カントの設定
-				/*
-				if (curveCurvature > 0) {
-					toL += Vector3.up * (float)curveCurvature * 7.5f;
-				}
-				if (curveCurvature < 0) {
-					toR += Vector3.up * -(float)curveCurvature * 7.5f;
-				}
-				*/
-
-				GameObject goL = CreateRail(railChunkPrefab, fromL, toL);
-				GameObject goR = CreateRail(railChunkPrefab, fromR, toR);
-				from = to;
-				fromL = toL;
-				fromR = toR;
-			}
-			previousCurveEndPosition = from;
+			Vector2 tempPosition = transitionCurves[i].GetPosition(1);
+			previousCurveEndPosition += rotator * new Vector3(tempPosition.y, 0, tempPosition.x);
 			previousCurveEndAngle += (float)transitionCurves[i].GetAngle(1);
 		}
 
-	}
-
-	private GameObject CreateRail(GameObject railChunkPrefab, Vector3 from, Vector3 to) {
-		GameObject go = Instantiate(railChunkPrefab, transform);
-
-		go.transform.localPosition = from;
-		go.transform.localRotation = Quaternion.LookRotation(to - from, Vector3.up);
-		go.transform.localScale = new Vector3(1, 1, (to - from).magnitude);
-
-		return go;
 	}
 
 	private void OnDrawGizmosSelected() {

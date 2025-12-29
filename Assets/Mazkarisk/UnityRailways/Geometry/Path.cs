@@ -8,7 +8,7 @@ namespace Geometry {
 	public class Path {
 
 		private readonly Vector3[] positions;
-		private readonly Vector3[] upDirection;
+		private readonly Vector3[] upDirections;
 		private readonly float[] distances;
 		private readonly float averageInterval;
 
@@ -16,20 +16,20 @@ namespace Geometry {
 		/// コンストラクタ。
 		/// </summary>
 		/// <param name="positions">曲線上の点の座標の配列。例えば線路の線形なら数mm～数cm単位など、十分に細かく、かつほぼ等間隔であることを想定している。</param>
-		/// <param name="upDirection">曲線上の点における上方向ベクトルの配列。内部で正規化するため、正規化されている必要はない。</param>
-		public Path(Vector3[] positions, Vector3[] upDirection) {
+		/// <param name="upDirections">曲線上の点における上方向ベクトルの配列。内部で正規化するため、正規化されている必要はない。</param>
+		public Path(Vector3[] positions, Vector3[] upDirections) {
 			this.positions = positions;
 
-			this.upDirection = new Vector3[positions.Length];
-			if (upDirection != null && upDirection.Length == positions.Length) {
+			this.upDirections = new Vector3[positions.Length];
+			if (upDirections != null && upDirections.Length == positions.Length) {
 				// 上方向ベクトルが正しく指定されている場合、正規化して格納する。
-				for (int i = 0; i < upDirection.Length; i++) {
-					this.upDirection[i] = upDirection[i].normalized;
+				for (int i = 0; i < upDirections.Length; i++) {
+					this.upDirections[i] = upDirections[i].normalized;
 				}
 			} else {
 				// 上方向ベクトルが未指定である場合、仮の値(真上方向)で埋める。
-				for (int i = 0; i < this.upDirection.Length; i++) {
-					this.upDirection[i] = Vector3.up;
+				for (int i = 0; i < this.upDirections.Length; i++) {
+					this.upDirections[i] = Vector3.up;
 				}
 			}
 
@@ -38,6 +38,35 @@ namespace Geometry {
 			distances[0] = 0; // 始点の累計距離は0とする。
 			for (int i = 1; i < this.positions.Length; i++) {
 				distances[i] = (this.positions[i] - this.positions[i - 1]).magnitude + distances[i - 1];
+			}
+
+			// 点間の平均間隔を求める。
+			averageInterval = distances[distances.Length - 1] / distances.Length;
+		}
+
+		/// <summary>
+		/// TransitionCurveからPathを作成するコンストラクタ。
+		/// </summary>
+		/// <param name="original">元となるTransitionCurveオブジェクト。</param>
+		public Path(TransitionCurve original) {
+
+			positions = new Vector3[original.division + 1];
+			for (int i = 0; i < positions.Length; i++) {
+				float t = (float)i / original.division;
+				Vector2 tempPosition = original.GetPosition(t);
+				positions[i] = new Vector3(tempPosition.y, 0, tempPosition.x);
+			}
+
+			upDirections = new Vector3[original.division + 1];
+			for (int i = 0; i < upDirections.Length; i++) {
+				upDirections[i] = Vector3.up; // TODO 良い感じにする
+			}
+
+			// 始点からの累計距離を計算し保存しておく。
+			distances = new float[positions.Length];
+			distances[0] = 0; // 始点の累計距離は0とする。
+			for (int i = 1; i < positions.Length; i++) {
+				distances[i] = (positions[i] - positions[i - 1]).magnitude + distances[i - 1];
 			}
 
 			// 点間の平均間隔を求める。
@@ -94,19 +123,19 @@ namespace Geometry {
 		public Vector3 GetUpDirection(float distance) {
 			// 指定された距離が0以下なら、始点を返す。
 			if (distance <= 0) {
-				return upDirection[0].normalized;
+				return upDirections[0].normalized;
 			}
 
 			for (int i = 1; i < distances.Length; i++) {
 				// 指定された距離が頂点までの累計距離以下なら、頂点位置を線形補間して返す。
 				if (distance <= distances[i]) {
 					float blendRate = (distance - distances[i - 1]) / (distances[i] - distances[i - 1]);
-					return (upDirection[i] * blendRate + upDirection[i - 1] * (1 - blendRate)).normalized;
+					return (upDirections[i] * blendRate + upDirections[i - 1] * (1 - blendRate)).normalized;
 				}
 			}
 
 			// 指定された距離が全体の長さ以上なら、終点を返す。
-			return upDirection[upDirection.Length - 1].normalized;
+			return upDirections[upDirections.Length - 1].normalized;
 		}
 
 		/// <summary>
@@ -131,14 +160,15 @@ namespace Geometry {
 		/// パスを一定数に分割した頂点の配列を作成する。右手方向を正とした、横方向のオフセット量も指定できる。
 		/// </summary>
 		/// <param name="pointCount">始点と終点を含む、頂点の総数。</param>
+		/// <param name="edgeClearance">端の隙間。</param>
 		/// <param name="rightOffset">右手方向を正とした、横方向のオフセット量。</param>
 		/// <param name="upOffset">上方向を正とした、上下方向のオフセット量。</param>
 		/// <returns>頂点の配列。</returns>
-		public Vector3[] GetPositionArray(int pointCount, float rightOffset, float upOffset) {
+		public Vector3[] GetPositionArray(int pointCount, float edgeClearance, float rightOffset, float upOffset) {
 			Vector3[] result = new Vector3[pointCount];
 
 			for (int i = 0; i < pointCount; i++) {
-				float distance = GetOverallLength() * ((float)i / (pointCount - 1));
+				float distance = (GetOverallLength() - edgeClearance * 2f) * ((float)i / (pointCount - 1)) + edgeClearance;
 				result[i] = GetPosition(distance) + GetRightDirection(distance) * rightOffset + GetUpDirection(distance) * upOffset;
 			}
 
