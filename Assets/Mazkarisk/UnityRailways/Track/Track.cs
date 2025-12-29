@@ -100,13 +100,13 @@ public class Track : MonoBehaviour {
 		leftRailObject.transform.parent = transform;
 		leftRailObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 		leftRailComponent = leftRailObject.GetComponent<Rail>();
-		leftRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance, -offset, 0.160f));
+		leftRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance * 0.5f, -offset, 0.160f));
 
 		GameObject rightRailObject = Instantiate(railPrefab);
 		rightRailObject.transform.parent = transform;
 		rightRailObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 		rightRailComponent = rightRailObject.GetComponent<Rail>();
-		rightRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance, offset, 0.160f));
+		rightRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance * 0.5f, offset, 0.160f));
 
 		// ñçñÿÇÃå¬êîÇéZèoÅB
 		int sleepersCount = (int)Mathf.Ceil((path.GetOverallLength() - SleeperDepth - RailEdgeClearance) / MaxSleeperInterval) + 1;
