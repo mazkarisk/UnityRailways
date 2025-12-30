@@ -48,7 +48,15 @@ public class RailUtility {
 	/// <summary>レール断面の頂点数のうち、レール側面の頂点数。</summary>
 	public const int SideVerticesCount = 30;
 
-	public static Mesh CreateTopMesh(GameObject[] railChunkObjects, Transform railTransform, int meshDivision) {
+	/// <summary>
+	/// レール頭頂面のMeshを作成する。
+	/// </summary>
+	/// <param name="railChunkObjects">RailChunkのインスタンスの配列。</param>
+	/// <param name="railTransform">親となるRailオブジェクトのTransform。</param>
+	/// <param name="length">レール全体の長さ。</param>
+	/// <param name="meshDivision">レール全体の分割数。</param>
+	/// <returns>レール頭頂面のMesh。</returns>
+	public static Mesh CreateTopMesh(GameObject[] railChunkObjects, Transform railTransform, float length, int meshDivision) {
 		List<Vector3> vertices = new List<Vector3>();
 		for (int i = 0; i <= meshDivision; i++) {
 			float t = (float)i / meshDivision * railChunkObjects.Length;
@@ -65,32 +73,58 @@ public class RailUtility {
 		return mesh;
 	}
 
-	public static Mesh CreateSideMesh(GameObject[] railChunkObjects, Transform railTransform, int meshDivision) {
-		System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-
-		// 側面・底面のメッシュ
+	/// <summary>
+	/// レール側面(底面・端面を含む)のMeshを作成する。
+	/// </summary>
+	/// <param name="railChunkObjects">RailChunkのインスタンスの配列。</param>
+	/// <param name="railTransform">親となるRailオブジェクトのTransform。</param>
+	/// <param name="length">レール全体の長さ。</param>
+	/// <param name="meshDivision">レール全体の分割数。</param>
+	/// <returns>レール側面(底面・端面を含む)のMesh。</returns>
+	public static Mesh CreateSideMesh(GameObject[] railChunkObjects, Transform railTransform, float length, int meshDivision) {
 		List<Vector3> vertices = new List<Vector3>();
-		stopwatch.Restart();
+		List<Vector3> uvs = new List<Vector3>();
+		List<int> indices = new List<int>();
+
+		// 側面・底面のメッシュを作成する。
 		for (int i = 0; i <= meshDivision; i++) {
+			// 頂点の位置座標をListに追加する。
 			float t = (float)i / meshDivision * railChunkObjects.Length;
 			vertices.AddRange(TransformPoints(CrossSectionVertices.GetRange(TopVerticesCount - 1, SideVerticesCount), railChunkObjects, railTransform, t));
-		}
-		List<int> indices = ProcedualMesh.GetGridIndices(SideVerticesCount - 1, meshDivision, 0);
-		stopwatch.Stop();
-		Debug.Log("メッシュ作成時間 : " + stopwatch.Elapsed.TotalMilliseconds + " ms");
 
-		// 端面(始点側)のメッシュ
+			// 頂点のテクスチャ座標をListに追加する。
+			float u = (float)i / meshDivision * length;
+			float v = 0;
+			for (int j = 0; j < SideVerticesCount; j++) {
+				if (j > 0) {
+					int index = TopVerticesCount - 1 + j;
+					v -= (CrossSectionVertices[index] - CrossSectionVertices[index - 1]).magnitude;
+				}
+				uvs.Add(RotateUVSlightly(u, v));
+			}
+		}
+		indices.AddRange(ProcedualMesh.GetGridIndices(SideVerticesCount - 1, meshDivision, 0));
+
+		// 端面(始点側)のメッシュを作成する。
 		int offset1 = vertices.Count;
 		vertices.AddRange(TransformPoints(CrossSectionVertices.GetRange(0, CrossSectionVertices.Count - 1), railChunkObjects, railTransform, 0f));
+		uvs.AddRange(CrossSectionVertices.GetRange(0, CrossSectionVertices.Count - 1));
 		for (int i = 0; i < CrossSectionIndices.Count; i++) {
 			indices.Add(CrossSectionIndices[i] + offset1);
 		}
 
-		// 端面(終点側)のメッシュ
+		// 端面(終点側)のメッシュを作成する。
 		int offset2 = vertices.Count;
 		vertices.AddRange(TransformPoints(CrossSectionVertices.GetRange(0, CrossSectionVertices.Count - 1), railChunkObjects, railTransform, railChunkObjects.Length));
+		for (int i = 0; i < CrossSectionVertices.Count - 1; i++) {
+			// 終点側は裏返す。
+			Vector3 temp = CrossSectionVertices[i];
+			temp.x = -temp.x;
+
+			uvs.Add(temp);
+		}
 		for (int i = 0; i < CrossSectionIndices.Count; i++) {
-			// 終点側は裏返す
+			// 終点側は裏返す。
 			int i2 = i;
 			if (i % 3 == 1) i2++;
 			if (i % 3 == 2) i2--;
@@ -100,6 +134,7 @@ public class RailUtility {
 
 		Mesh mesh = new Mesh();
 		mesh.SetVertices(vertices);
+		mesh.SetUVs(0, uvs);
 		mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 		mesh.RecalculateBounds();
 		mesh.RecalculateNormals();
@@ -166,5 +201,15 @@ public class RailUtility {
 		}
 
 		return points;
+	}
+
+	/// <summary>タイリングを目立たなくさせるため、UV座標を微妙に回転させる。</summary>
+	/// <param name="u">変換元のU座標。</param>
+	/// <param name="v">変換元のV座標。</param>
+	/// <returns>微妙に回転させたUV座標。</returns>
+	private static Vector2 RotateUVSlightly(float u, float v) {
+		const float A = 0.12345f;   // 適当な値
+		const float B = 0.99235f;   // sqrt(1^2 - 上記の適当な値^2)
+		return new Vector2(u * B - v * A, v * B + u * A);
 	}
 }
