@@ -5,6 +5,11 @@ public class Rail : MonoBehaviour {
 	private GameObject[] railChunkObjects;
 	private MeshFilter topMeshFilter;
 	private MeshFilter sideMeshFilter;
+	private MeshRenderer topMeshRenderer;
+	private MeshRenderer sideMeshRenderer;
+
+	/// <summary>レール全体を含むバウンディングボックス。メッシュと同じタイミングで更新される。</summary>
+	public Bounds bounds { get; private set; }
 
 	/// <summary>レール全体の初期化時の長さ。</summary>
 	private float length;
@@ -19,12 +24,22 @@ public class Rail : MonoBehaviour {
 			topMeshFilter = transform.Find("TopMesh").GetComponent<MeshFilter>();
 		}
 		topMeshFilter.mesh = RailUtility.CreateTopMesh(railChunkObjects, transform, length, meshDivision);
-
+		
 		// レール側面のメッシュを更新する。
 		if (sideMeshFilter == null) {
 			sideMeshFilter = transform.Find("SideMesh").GetComponent<MeshFilter>();
 		}
 		sideMeshFilter.mesh = RailUtility.CreateSideMesh(railChunkObjects, transform, length, meshDivision);
+
+		// ワールド座標のバウンディングボックスをMeshRendererから取得し、合成したものを保持する。
+		if (topMeshRenderer == null) {
+			topMeshRenderer = transform.Find("TopMesh").GetComponent<MeshRenderer>();
+		}
+		if (sideMeshRenderer == null) {
+			sideMeshRenderer = transform.Find("SideMesh").GetComponent<MeshRenderer>();
+		}
+		bounds = topMeshRenderer.bounds;
+		bounds.Encapsulate(sideMeshRenderer.bounds);
 	}
 
 	/// <summary>
