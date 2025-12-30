@@ -6,6 +6,9 @@ public class Rail : MonoBehaviour {
 	private MeshFilter topMeshFilter;
 	private MeshFilter sideMeshFilter;
 
+	/// <summary>レール全体の初期化時の長さ。</summary>
+	private float length;
+
 	private void Start() {
 		UpdateMesh(100);
 	}
@@ -15,13 +18,13 @@ public class Rail : MonoBehaviour {
 		if (topMeshFilter == null) {
 			topMeshFilter = transform.Find("TopMesh").GetComponent<MeshFilter>();
 		}
-		topMeshFilter.mesh = RailUtility.CreateTopMesh(railChunkObjects, transform, meshDivision);
+		topMeshFilter.mesh = RailUtility.CreateTopMesh(railChunkObjects, transform, length, meshDivision);
 
 		// レール側面のメッシュを更新する。
 		if (sideMeshFilter == null) {
 			sideMeshFilter = transform.Find("SideMesh").GetComponent<MeshFilter>();
 		}
-		sideMeshFilter.mesh = RailUtility.CreateSideMesh(railChunkObjects, transform, meshDivision);
+		sideMeshFilter.mesh = RailUtility.CreateSideMesh(railChunkObjects, transform, length, meshDivision);
 	}
 
 	/// <summary>
@@ -38,6 +41,7 @@ public class Rail : MonoBehaviour {
 	/// </summary>
 	/// <param name="positionArray">レールが通る座標(ローカル座標系)の配列。</param>
 	public void Initialize(Vector3[] positionArray) {
+		length = 0;
 
 		// レールのプレハブを読み込む。
 		GameObject railChunkPrefab = (GameObject)Resources.Load("RailChunk");
@@ -46,6 +50,7 @@ public class Rail : MonoBehaviour {
 		railChunkObjects = new GameObject[positionArray.Length - 1];
 		for (int i = 0; i < positionArray.Length - 1; i++) {
 			Vector3 diff = positionArray[i + 1] - positionArray[i];
+			length += diff.magnitude;
 
 			// レールをインスタンス化し、設定を行う。
 			railChunkObjects[i] = Instantiate(railChunkPrefab, railChunksTransform);
