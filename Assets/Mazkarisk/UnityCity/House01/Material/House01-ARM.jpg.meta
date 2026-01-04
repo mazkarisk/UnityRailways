@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a070a42eec683ca4cb7b64c1fa090b48
+guid: ef4c741582d87644d922ab5846a0a7c6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -7,7 +7,7 @@ TextureImporter:
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
-    sRGBTexture: 1
+    sRGBTexture: 0
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -64,7 +64,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
-  swizzle: 50462976
+  swizzle: 84475906
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
