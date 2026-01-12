@@ -16,3 +16,5 @@ Unityの物理演算機能を使って鉄道車両を走らせてみようぜと
   - 「Plastered Wall 02」 (https://polyhaven.com/a/plastered_wall_02)
   - 「Facade 018 A」 (https://ambientcg.com/view?id=Facade018A) ※窓部分のみ
   - 「Facade 018 C」 (https://ambientcg.com/view?id=Facade018C) ※窓部分の発光テクスチャのみ
+- エフェクトに使用
+  - 「Explosion02HD」 (https://unity.com/blog/engine-platform/free-vfx-image-sequences-flipbooks)
