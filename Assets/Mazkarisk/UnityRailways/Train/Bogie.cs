@@ -18,6 +18,8 @@ public class Bogie : MonoBehaviour {
 	public int notch { get; set; } = 0;
 	public bool backward { get; set; } = false;
 
+	private AudioSource motorAudioSource = null;
+
 	void FixedUpdate() {
 		Rigidbody rigidbody = gameObject.GetComponent<Rigidbody>();
 
@@ -73,6 +75,14 @@ public class Bogie : MonoBehaviour {
 			hingeJointF.useMotor = true;
 			hingeJointR.useMotor = true;
 		}
+
+		float averageVelocity = (hingeJointF.velocity + hingeJointF.velocity) / 2;
+		float averageRpm = averageVelocity / (2 * Mathf.PI);
+		if (motorAudioSource == null) {
+			motorAudioSource = transform.Find("AudioSource").GetComponent<AudioSource>();
+			motorAudioSource.time = motorAudioSource.clip.length * UnityEngine.Random.value;
+		}
+		motorAudioSource.pitch = (averageRpm / 120f) * 3.50f;
 	}
 
 	private struct BogieData {

@@ -1,5 +1,7 @@
 using Geometry;
+using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class Track : MonoBehaviour {
 
@@ -100,13 +102,13 @@ public class Track : MonoBehaviour {
 		leftRailObject.transform.parent = transform;
 		leftRailObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 		leftRailComponent = leftRailObject.GetComponent<Rail>();
-		leftRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance * 0.5f, -offset, 0.160f));
+		leftRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance * 0.5f, -offset, 0.260f));
 
 		GameObject rightRailObject = Instantiate(railPrefab);
 		rightRailObject.transform.parent = transform;
 		rightRailObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 		rightRailComponent = rightRailObject.GetComponent<Rail>();
-		rightRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance * 0.5f, offset, 0.160f));
+		rightRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance * 0.5f, offset, 0.260f));
 
 		// 枕木の個数を算出。
 		int sleepersCount = (int)Mathf.Ceil((path.GetOverallLength() - SleeperDepth - RailEdgeClearance) / MaxSleeperInterval) + 1;
@@ -119,7 +121,7 @@ public class Track : MonoBehaviour {
 
 			railSleeperObjects[i] = Instantiate(sleeperPrefab);
 			railSleeperObjects[i].transform.parent = transform;
-			railSleeperObjects[i].transform.localPosition = path.GetPosition(distance);
+			railSleeperObjects[i].transform.localPosition = path.GetPosition(distance) + Vector3.up * 0.100f;
 			railSleeperObjects[i].transform.localRotation = path.GetLookRotation(distance);
 			railSleeperObjects[i].transform.localScale = Vector3.one;
 
@@ -132,6 +134,10 @@ public class Track : MonoBehaviour {
 			joints[1].connectedBody = rightRailComponent.GetRailChunkObject(railChunkIndex).GetComponent<Rigidbody>();
 		}
 
+		// 道床のメッシュを作成。分割数は枕木の数を流用。
+		Mesh mesh = TrackUtility.CreateTrackbedMesh(path, sleepersCount);
+		Transform trackbedTransform = transform.Find("Trackbed");
+		trackbedTransform.GetComponent<MeshFilter>().mesh = mesh;
 	}
 
 	public void SetKinematic(bool isKinematic) {
