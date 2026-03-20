@@ -4,22 +4,13 @@ using UnityEngine;
 [ExecuteAlways]
 public class Wheelset : MonoBehaviour {
 
-	const int treadDivisions = 80;
-	const int flangeDivisions = 80;
+	const int treadDivisions = 60;
+	const int flangeDivisions = 60;
 
 	public float wheelDiameter { get; set; } = 0.860f;
 	public float wheelThickness { get; set; } = 0.125f;
 	public float treadReferencePosition { get; set; } = 0.065f;
 	public float backGauge { get; set; } = 0.990f;
-
-	const float treadBevel = 0.005f;
-	const float treadSlope = 1f / 20f;
-	const float flangeHeight = 0.030f;
-	const float flangeRadius = 0.010f;
-	const float flangeInsideAngle = 82;
-	const float flangeOutsideAngle = 65;
-	const float treadFrangeDistance = 0.010f;
-	const float colliderExtension = 0.01f;
 
 	private bool refreshMeshesRequired = true;
 	[SerializeField] public PhysicsMaterial physicsMaterial = null;
@@ -72,70 +63,30 @@ public class Wheelset : MonoBehaviour {
 
 	void RefreshMeshes() {
 		/*
-		 *　｜　　　基準(0, 0)　　　　　｜
-		 *　①　　　　　｜　　　　　　　｜　　
-		 *　：＼　　　　↓　　　　　　　｜　　
-		 *　②…③―――★――④　　　　⑩
-		 *　　　　　　　　　　　⑤　　　/
-		 *　　┌→+X　　　　　　　⑥⑧⑨
-		 *　　↓　　　　　　　　　└⑦┘
+		 *　｜　　　基準(0, 0)　　　　｜
+		 *　〇　　　　　｜　　　　　　｜　　
+		 *　：＼　　　　↓　　　　　　｜　　
+		 *　〇…〇―――★――〇　　　〇
+		 *　　　　　　　　　　└〇　　｜
+		 *　　┌→+X　　　　　　└〇　〇
+		 *　　↓　　　　　　　　　└〇┘
 		 *　　+Y
 		 */
 		float wheelRadius = wheelDiameter / 2f;
-		Vector2 point1;
-		Vector2 point2;
-		Vector2 point3;
-		Vector2 point4;
-		Vector2 point5;
-		Vector2 point6;
-		Vector2 point7;
-		Vector2 point8;
-		Vector2 point9;
-		Vector2 point10;
-
-		float flangeInsideSlope = Mathf.Tan(flangeInsideAngle * Mathf.Deg2Rad);
-		float flangeOutsideSlope = Mathf.Tan(flangeOutsideAngle * Mathf.Deg2Rad);
-
-		// 踏面外側
-		point1.x = treadReferencePosition - wheelThickness;
-		point2.x = treadReferencePosition - wheelThickness;
-		point3.x = treadReferencePosition - wheelThickness + treadBevel;
-		point3.y = point3.x * treadSlope;
-		point2.y = point2.x * treadSlope;
-		point1.y = point3.y - treadBevel;
-
-		// フランジ部
-		point10 = new Vector2(treadReferencePosition, 0);
-		point9.y = flangeHeight - flangeRadius * Mathf.Cos(flangeInsideAngle * Mathf.Deg2Rad);
-		point9.x = point10.x - point9.y / flangeInsideSlope;
-		point8.y = flangeHeight - flangeRadius;
-		point8.x = point9.x - flangeRadius * Mathf.Sin(flangeInsideAngle * Mathf.Deg2Rad);
-		point7 = new Vector2(point8.x, flangeHeight);
-		point6.y = point8.y + flangeRadius * Mathf.Sin(flangeOutsideAngle * Mathf.Deg2Rad);
-		point6.x = point8.x - flangeRadius * Mathf.Cos(flangeOutsideAngle * Mathf.Deg2Rad);
-		point5.y = treadFrangeDistance;
-		point5.x = point6.x - (point6.y - point5.y) / flangeOutsideSlope;
-
-		// 踏面-フランジ外面の交点
-		point4.x = (point6.x * flangeOutsideSlope - point6.y) / (flangeOutsideSlope - treadSlope);
-		point4.y = point4.x * treadSlope;
 
 		// コライダー形状
-		float tan1 = Mathf.Tan(flangeInsideAngle * Mathf.Deg2Rad);
-		float tan2 = Mathf.Tan((180 - flangeInsideAngle) / 2 * Mathf.Deg2Rad);
-		float tan3 = Mathf.Tan((180 - flangeOutsideAngle) / 2 * Mathf.Deg2Rad);
 		Vector2[] treadCollider1Points = new Vector2[] {
-			point4+(point4 - point2).normalized  * colliderExtension + Vector2.up * wheelRadius,
-			point2 + Vector2.up * wheelRadius
+			new Vector2(0.060f, 0.003f) + Vector2.up * wheelRadius,
+			new Vector2(-0.060f, -0.003f) + Vector2.up * wheelRadius
 		};
 		Vector2[] treadCollider2Points = new Vector2[] {
-			point5 + Vector2.up * wheelRadius,
-			(Vector2.zero + point4) / 2 + Vector2.up * wheelRadius
+			new Vector2(0.050f, 0.030f) + Vector2.up * wheelRadius,
+			new Vector2(0.010f, -0.010f) + Vector2.up * wheelRadius
 		};
 		Vector2[] flangeColliderPoints = new Vector2[] {
-			point10 + Vector2.up * (flangeHeight + wheelRadius),
-			new Vector2(point10.x - flangeHeight / tan1 - flangeRadius * (1 / tan2 + 1 / tan3), wheelRadius + flangeHeight),
-			point4 + (point4 - point6).normalized * colliderExtension + Vector2.up * wheelRadius
+			new Vector2(0.065f, 0.050f) + Vector2.up * wheelRadius,
+			new Vector2(0.055f, 0.050f) + Vector2.up * wheelRadius,
+			new Vector2(0.020f, -0.020f) + Vector2.up * wheelRadius
 		};
 
 		// Meshの生成
