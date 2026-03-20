@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Rail : MonoBehaviour {
@@ -15,7 +16,6 @@ public class Rail : MonoBehaviour {
 	private float length;
 
 	private void Start() {
-		UpdateMesh(100);
 	}
 
 	public void UpdateMesh(int meshDivision) {
@@ -24,7 +24,7 @@ public class Rail : MonoBehaviour {
 			topMeshFilter = transform.Find("TopMesh").GetComponent<MeshFilter>();
 		}
 		topMeshFilter.mesh = RailUtility.CreateTopMesh(railChunkObjects, transform, length, meshDivision);
-		
+
 		// レール側面のメッシュを更新する。
 		if (sideMeshFilter == null) {
 			sideMeshFilter = transform.Find("SideMesh").GetComponent<MeshFilter>();
@@ -38,8 +38,9 @@ public class Rail : MonoBehaviour {
 		if (sideMeshRenderer == null) {
 			sideMeshRenderer = transform.Find("SideMesh").GetComponent<MeshRenderer>();
 		}
-		bounds = topMeshRenderer.bounds;
-		bounds.Encapsulate(sideMeshRenderer.bounds);
+		Bounds tempBounds = topMeshRenderer.bounds;
+		tempBounds.Encapsulate(sideMeshRenderer.bounds);
+		bounds = tempBounds;
 	}
 
 	/// <summary>
@@ -73,28 +74,8 @@ public class Rail : MonoBehaviour {
 			railChunkObjects[i].transform.localPosition = positionArray[i];
 			railChunkObjects[i].transform.localRotation = Quaternion.LookRotation(diff);
 			railChunkObjects[i].transform.localScale = new Vector3(1, 1, diff.magnitude);
-			railChunkObjects[i].GetComponent<Rigidbody>().mass = 40f * diff.magnitude;
-
-			// 最後尾のレールなら自身のJointは使用しないので削除する。
-			if (i >= positionArray.Length - 2) {
-				DestroyImmediate(railChunkObjects[i].GetComponent<ConfigurableJoint>());
-			}
-
-			// 先頭以外の場合、一つ前のレールのJointに自身のRigidbodyを設定する。
-			if (i > 0) {
-				ConfigurableJoint joint = railChunkObjects[i - 1].GetComponent<ConfigurableJoint>();
-				joint.connectedBody = railChunkObjects[i].GetComponent<Rigidbody>();
-			}
 		}
-	}
 
-	/// <summary>
-	/// 各RailChunkのisKinematic属性を一括設定する。
-	/// </summary>
-	/// <param name="isKinematic">変更後のisKinematic。</param>
-	public void SetKinematic(bool isKinematic) {
-		for (int i = 0; i < railChunkObjects.Length; i++) {
-			railChunkObjects[i].GetComponent<Rigidbody>().isKinematic = isKinematic;
-		}
+		UpdateMesh(100);
 	}
 }
