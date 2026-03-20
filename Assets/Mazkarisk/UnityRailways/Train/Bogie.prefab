@@ -996,15 +996,15 @@ ConfigurableJoint:
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
-  m_XMotion: 1
+  m_XMotion: 0
   m_YMotion: 1
-  m_ZMotion: 1
+  m_ZMotion: 0
   m_AngularXMotion: 0
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
-    spring: 5000000
-    damper: 5000000
+    spring: 10000000
+    damper: 100000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -1510,15 +1510,15 @@ ConfigurableJoint:
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
-  m_XMotion: 1
+  m_XMotion: 0
   m_YMotion: 1
-  m_ZMotion: 1
+  m_ZMotion: 0
   m_AngularXMotion: 0
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
-    spring: 5000000
-    damper: 5000000
+    spring: 10000000
+    damper: 100000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -1884,15 +1884,15 @@ ConfigurableJoint:
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
-  m_XMotion: 1
+  m_XMotion: 0
   m_YMotion: 1
-  m_ZMotion: 1
+  m_ZMotion: 0
   m_AngularXMotion: 0
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
-    spring: 5000000
-    damper: 5000000
+    spring: 10000000
+    damper: 100000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -2561,15 +2561,15 @@ ConfigurableJoint:
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
-  m_XMotion: 1
+  m_XMotion: 0
   m_YMotion: 1
-  m_ZMotion: 1
+  m_ZMotion: 0
   m_AngularXMotion: 0
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
-    spring: 5000000
-    damper: 5000000
+    spring: 10000000
+    damper: 100000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0

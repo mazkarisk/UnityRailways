@@ -549,8 +549,8 @@ ConfigurableJoint:
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
-    spring: 100000000
-    damper: 100000000
+    spring: 1000000
+    damper: 1000000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -651,8 +651,8 @@ ConfigurableJoint:
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
-    spring: 100000000
-    damper: 100000000
+    spring: 1000000
+    damper: 1000000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -1337,8 +1337,8 @@ ConfigurableJoint:
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
-    spring: 100000000
-    damper: 100000000
+    spring: 1000000
+    damper: 1000000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -1439,8 +1439,8 @@ ConfigurableJoint:
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
-    spring: 100000000
-    damper: 100000000
+    spring: 1000000
+    damper: 1000000
   m_LinearLimit:
     limit: 0.001
     bounciness: 0
@@ -1603,6 +1603,7 @@ GameObject:
   - component: {fileID: 6886225910950885232}
   - component: {fileID: 2968685325684727387}
   - component: {fileID: 1017002626097063094}
+  - component: {fileID: 6494458083705429163}
   m_Layer: 0
   m_Name: GearCase
   m_TagString: Untagged
@@ -1692,6 +1693,18 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &6494458083705429163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7781001185477509272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b91107ddc53a5940b0b91a81b844f64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8749260291804039880
 GameObject:
   m_ObjectHideFlags: 0
