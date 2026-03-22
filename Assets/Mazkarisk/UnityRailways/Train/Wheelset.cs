@@ -80,8 +80,8 @@ public class Wheelset : MonoBehaviour {
 			new Vector2(-0.060f, -0.003f) + Vector2.up * wheelRadius
 		};
 		Vector2[] treadCollider2Points = new Vector2[] {
-			new Vector2(0.050f, 0.030f) + Vector2.up * wheelRadius,
-			new Vector2(0.010f, -0.010f) + Vector2.up * wheelRadius
+			new Vector2(0.050f, 0.020f) + Vector2.up * wheelRadius,
+			new Vector2(-0.010f, -0.010f) + Vector2.up * wheelRadius
 		};
 		Vector2[] flangeColliderPoints = new Vector2[] {
 			new Vector2(0.065f, 0.050f) + Vector2.up * wheelRadius,

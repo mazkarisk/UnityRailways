@@ -6,8 +6,8 @@ public class RailConstructor : MonoBehaviour {
 
 	private const float RANDOMISE_MAGNITUDE = 0.000f;
 
-	private const float RADIUS = 150;
-	private const float LENGTH = 150;
+	private const float RADIUS = 42.9f;
+	private const float LENGTH = 24.2f;
 	private List<TransitionCurve> transitionCurves = new List<TransitionCurve>(){
 		new TransitionCurve(0, 0, LENGTH/2),
 		new TransitionCurve(0, 1.0 / RADIUS, (2 * Mathf.PI / 12f / (0 + 1.0 / RADIUS))),
@@ -63,7 +63,7 @@ public class RailConstructor : MonoBehaviour {
 
 	}
 
-	private void OnDrawGizmosSelected() {
+	private void OnDrawGizmos() {
 		Gizmos.color = new Color(0, 0, 1, 1);
 		Vector3 previousCurveEndPosition = Vector3.zero;
 		float previousCurveEndAngle = 0f;
