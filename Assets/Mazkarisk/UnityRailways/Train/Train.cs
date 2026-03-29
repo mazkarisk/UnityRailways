@@ -43,29 +43,23 @@ public class Train : MonoBehaviour {
 		Vector3 averagedLinearVelocity = (bogieF.averagedLinearVelocity + bogieR.averagedLinearVelocity) / 2f;
 		Vector3 averagedAngularVelocity = (bogieF.averagedAngularVelocity + bogieR.averagedAngularVelocity) / 2f;
 		float averagedFixedDeltaTime = (bogieF.averagedFixedDeltaTime + bogieR.averagedFixedDeltaTime) / 2f;
+		float averagedCurvature = (bogieF.averagedCurvature + bogieR.averagedCurvature) / 2f;
 
 		logText += "[↓]:加速、[↑]:減速、[Ｒ]:後進切替\n";
 		logText += "ノッチ : " + notch + " / 5" + (backward ? " (後進)" : "") + "\n";
-		//logText += "averagedLinearVelocity    [m/s] : " + averagedLinearVelocity.ToString() + "\n";
-		//logText += "averagedAngularVelocity [rad/s] : " + averagedAngularVelocity.ToString() + "\n";
-		//logText += "averagedFixedDeltaTime : " + averagedFixedDeltaTime + "\n";
 		logText += "速度 [km/h] : " + (averagedLinearVelocity.z * 3.6f).ToString("F1") + "\n";
 
-		/*
-		float curvature = 0f;
-		if (averagedLinearVelocity.z != 0) {
-			curvature = averagedAngularVelocity.y / averagedLinearVelocity.z;
+		float radiusFromCurvatureF = float.NaN;
+		float radiusFromCurvatureR = float.NaN;
+		if (Mathf.Abs(bogieF.averagedCurvature) > 0.001f) {
+			radiusFromCurvatureF = 1f / bogieF.averagedCurvature;
 		}
-		logText += "曲率 [rad/m] : " + curvature.ToString("F4") + "\n";
-		float radiusFromCurvature = 0f;
-		if (curvature != 0) {
-			radiusFromCurvature = 1f / curvature;
-			if (Mathf.Abs(radiusFromCurvature) > 10000f) {
-				radiusFromCurvature = 0f;
-			}
+		if (Mathf.Abs(bogieR.averagedCurvature) > 0.001f) {
+			radiusFromCurvatureR = 1f / bogieR.averagedCurvature;
 		}
-		logText += "曲率半径 [m] : " + radiusFromCurvature.ToString("F0") + "\n";
-		*/
+
+		logText += "前側台車曲率半径 [m] : " + radiusFromCurvatureF.ToString("F1") + "\n";
+		logText += "後側台車曲率半径 [m] : " + radiusFromCurvatureR.ToString("F1") + "\n";
 
 		// ログのテキストスタイルを設定
 		GUIStyle guiStyleBack = new GUIStyle();
