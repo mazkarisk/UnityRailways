@@ -12,6 +12,12 @@ public class Track : MonoBehaviour {
 	/// <summary>レール継目の隙間(m)</summary>
 	const float RailEdgeClearance = 0.010f;
 
+	/// <summary>枕木の幅(m)</summary>
+	const float SleeperWidth = 2.100f;
+
+	/// <summary>枕木の高さ(m)</summary>
+	const float SleeperHeight = 0.140f;
+
 	/// <summary>枕木の奥行き(m)</summary>
 	const float SleeperDepth = 0.200f;
 
@@ -104,14 +110,14 @@ public class Track : MonoBehaviour {
 		rightRailComponent = rightRailObject.GetComponent<Rail>();
 		rightRailComponent.Initialize(path.GetPositionArray(railChunkCount + 1, RailEdgeClearance * 0.5f, offset, 0.260f));
 
-		// 枕木の個数を算出。
+		// 枕木の個数を算出する。
 		int sleepersCount = (int)Mathf.Ceil((path.GetOverallLength() - SleeperDepth - RailEdgeClearance) / MaxSleeperInterval) + 1;
 
 		Bounds tempBounds = leftRailComponent.bounds;
 		tempBounds.Encapsulate(rightRailComponent.bounds);
 		bounds = tempBounds;
 
-		// 枕木をインスタンス化。
+		// 枕木をインスタンス化する。
 		railSleeperObjects = new GameObject[sleepersCount];
 		float sleeperInterval = (path.GetOverallLength() - SleeperDepth - RailEdgeClearance) / (sleepersCount - 1);
 		for (int i = 0; i < sleepersCount; i++) {
@@ -124,11 +130,23 @@ public class Track : MonoBehaviour {
 			railSleeperObjects[i].transform.localScale = Vector3.one;
 		}
 
-		// 道床のメッシュを作成。分割数は枕木の数を流用。
-		Mesh mesh = TrackUtility.CreateTrackbedMesh(path, sleepersCount);
+		// 道床のメッシュを作成する。分割数は枕木の数を流用する。
+		Mesh trackbedMesh = TrackUtility.CreateTrackbedMesh(path, sleepersCount);
 		Transform trackbedTransform = transform.Find("Trackbed");
-		trackbedTransform.GetComponent<MeshFilter>().sharedMesh = mesh;
-		trackbedTransform.GetComponent<MeshCollider>().sharedMesh = mesh;
+		trackbedTransform.GetComponent<MeshFilter>().sharedMesh = trackbedMesh;
+		trackbedTransform.GetComponent<MeshCollider>().sharedMesh = trackbedMesh;
 
+		// 枕木のメッシュを作成する。UV座標はランダム化する。
+		CombineInstance[] combine = new CombineInstance[sleepersCount];
+		for (int i = 0; i < sleepersCount; i++) {
+			float distance = RailEdgeClearance * 0.5f + SleeperDepth * 0.5f + sleeperInterval * i;
+			combine[i].mesh = SleeperUtility.CreateMesh(new Vector3(SleeperWidth, SleeperHeight, SleeperDepth), new Vector2(Random.value, Random.value));
+			combine[i].transform = Matrix4x4.TRS(path.GetPosition(distance) + Vector3.up * 0.100f, path.GetLookRotation(distance), Vector3.one);
+		}
+		Mesh sleepersMesh = new Mesh();
+		sleepersMesh.CombineMeshes(combine);
+		Transform sleepersTransform = transform.Find("Sleepers");
+		sleepersTransform.GetComponent<MeshFilter>().sharedMesh = sleepersMesh;
+		sleepersTransform.GetComponent<MeshCollider>().sharedMesh = sleepersMesh;
 	}
 }
